@@ -1,3 +1,7 @@
+<style>
+    ol {list-style-type:none;}
+</style>
+
 #  Promise Specification
 
 This is the specification for promises defined in lib/Promise.swift. It is closely based on [Promises/A+ specification](https://promisesaplus.com/) but differs from it in several important points as promises defined here are type safe.
