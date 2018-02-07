@@ -10,8 +10,8 @@ import Foundation
 
 class Fetch {
     
-    class func request(_ request: URLRequest) -> Promise<Data> {
-        return Promise<Data> {
+    class func request(_ request: URLRequest) -> Promise {
+        return Promise {
             resolve, reject in
             
             URLSession.shared.dataTask(with: request) {
@@ -32,37 +32,38 @@ class Fetch {
                     return
                 }
                 
-                resolve(data!)
+                resolve(data)
             } .resume()
         }
     }
     
-    class func url(_ url: URL) -> Promise<Data> {
+    class func url(_ url: URL) -> Promise {
         return request(URLRequest(url:url))
     }
     
-    class func from(_ link: String) -> Promise<Data> {
+    class func from(_ link: String) -> Promise {
         let url = URL(string: link)
         guard nil != url else {
-            return Promise<Data>.reject("Invalid URL \(link)")
+            return Promise.reject("Invalid URL \(link)")
         }
         
         return request(URLRequest(url: url!))
     }
     
-    class func json(request: URLRequest) -> Promise<Any> {
+    class func json(request: URLRequest) -> Promise {
         return self.request(request).then  {
-            data in
+            result in
+            let data = result as! Data
             do {
                 let content = try JSONSerialization.jsonObject(with: data, options: [])
                 return content
             } catch {
-                return Promise<Any>.reject("Parse error")
+                return Promise.reject("Parse error")
             }
         }
     }
     
-    class func json(_ link: String) -> Promise<Any> {
+    class func json(_ link: String) -> Promise {
         let url = URL(string: link)
         guard nil != url else {
             return Promise.reject("Invalid URL \(link)")

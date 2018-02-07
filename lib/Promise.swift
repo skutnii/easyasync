@@ -8,115 +8,203 @@
 
 import Foundation
 
-public protocol Thenable {
-    associatedtype Value
-    func then<O, E>(_ onSuccess: ((Value) throws -> O)?, _ onError: ((E) throws -> O)?) -> Promise<O>
-}
 
-public class Promise<T> : Thenable {
+class Promise {
+
+    typealias Handler = (Any?) throws -> Any?
+
+    private var _main : Handler
+    private var _rescue: Promise?
+    private var _next: Promise?
     
-    public enum State {
-        case pending
-        case fulfilled
-        case rejected
+    private init(main: @escaping Handler) {
+        _main = main
     }
     
-    private var resolveCallbacks = [(T) -> ()]()
-    private var rejectCallbacks = [(Any?) -> ()]()
+    convenience init() {
+        self.init(main: { res in return res })
+    }
     
-    public private(set) var state: State = .pending
-    public private(set) var result: T? {
-        didSet {
-            if (nil != result) {
-                state = .fulfilled
-                for onResolve in resolveCallbacks {
-                    onResolve(result!)
-                }
-            }
+    private func chain(_ next: Promise?) -> Promise {
+        guard nil != _next else {
+            _next = next
+            return _next!
         }
+        
+        return _next!.chain(next)
     }
     
-    public private(set) var rejectionReason: Any? {
-        didSet {
-            if (nil != rejectionReason) {
-                state = .rejected
-                for onReject in rejectCallbacks {
-                    onReject(rejectionReason)
-                }
-            }
-        }
-    }
-    
-    public func resolve(_ value: T) {
+    private func next(value: Any?) -> Any? {
         do {
             
+            let result = try _main(value)
+            let deferred = result as? Promise
+            guard nil == deferred else {
+                return deferred!.chain(_next)
+            }
+            
+            guard nil != _next else {
+                return result
+            }
+            
+            return _next!.next(value:result)
         } catch {
             reject(error)
+            return nil
         }
     }
     
-    public func reject(_ reason: Any?) {
+    func resolve(_ value: Any?) {
+        _ = next(value: value)
+    }
+    
+    func reject(_ error: Any?) {
+        if (nil != _rescue) {
+            _rescue!.resolve(error)
+            return
+        }
         
+        if (nil != _next) {
+            _next!.reject(error)
+            return
+        }
+        
+        var description = "Unknown error"
+        if (nil != error as? String) {
+            description = error as! String
+        }
+        
+        print("\(description) uncaught in promise")
     }
     
-    enum TypeError : Error {
-        case rescueMismatch
-        case typeMismatch
+    func then(_ block: @escaping Handler) -> Promise {
+        return self.chain(Promise(main:block))
     }
     
-    public func then<O, E>(_ onSuccess: ((T) throws -> O)? = nil, _ onError: ((E) throws -> O)? = nil) -> Promise<O> {
-        let next =  Promise<O>()
-        let onFulfilled = {
-            (value: T) -> () in
-            do {
-                guard nil != onSuccess else {
-                    guard value is O else {
-                        throw TypeError.typeMismatch
+    func rescue(_ block: @escaping Handler) -> Promise {
+        _rescue = Promise(main:block)
+        return _rescue!
+    }
+    
+    typealias Resolver = (Any?) -> ()
+    convenience init(_ block: @escaping (@escaping Resolver, @escaping Resolver) ->()) {
+        self.init()
+        DispatchQueue.main.async {
+            block(self.resolve, self.reject)
+        }
+    }
+    
+    class func resolve(_ res: Any?) -> Promise {
+        return Promise {
+            resolve, reject in
+            resolve(res)
+        }
+    }
+    
+    class func reject(_ res: Any?) -> Promise {
+        return Promise {
+            resolve, reject in
+            reject(res)
+        }
+    }
+    
+    class func all(_ promises: [Promise]) -> Promise {
+        guard promises.count > 0 else {
+            return Promise.resolve(true)
+        }
+        
+        class Semaphore {
+            let max : Int
+
+            var resolved : Int = 0
+            var rejected: Bool = false
+            
+            var results = [Any]()
+            
+            init(_ count: Int) {
+                max = count
+            }
+        }
+        
+        let semaphore = Semaphore(promises.count)
+        let combo = Promise()
+        
+        promises.forEach {
+            promise in
+            _ = promise.then {
+                result in
+                if (!semaphore.rejected) {
+                    if (nil != result) {
+                        semaphore.results.append(result!)
                     }
                     
-                    next.resolve(value as! O)
-                    return
+                    semaphore.resolved += 1
+                    if (semaphore.resolved == semaphore.max) {
+                        combo.resolve(semaphore.results)
+                    }
                 }
                 
-                let nextValue = try onSuccess!(value)
-                next.resolve(nextValue)
-            } catch {
-                next.reject(error)
+                return result
+            } .rescue {
+                error in
+                if (!semaphore.rejected) {
+                    semaphore.rejected = true
+                    combo.reject(error)
+                }
+                
+                return error
             }
         }
         
-        let onRejected = {
-            (reason: Any?) -> () in
-            do {
-                guard reason is E else {
-                    throw TypeError.rescueMismatch
-                }
-                
-                guard nil != onError else {
-                    next.reject(reason)
-                    return
-                }
-                
-                let nextValue = try onError!(reason as! E)
-                next.resolve(nextValue)
-            } catch TypeError.rescueMismatch {
-                next.reject(reason)
-            } catch {
-                next.reject(error)
-            }
-        }
-
-        if State.pending == state {
-            resolveCallbacks.append(onFulfilled)
-            rejectCallbacks.append(onRejected)
-        } else if (State.fulfilled == state) {
-            onFulfilled(result!)
-        } else {
-            onRejected(rejectionReason)
-        }
-        
-        return next
+        return combo
     }
     
-
+    class func race(_ promises: [Promise]) -> Promise {
+        guard promises.count > 0 else {
+            return Promise.resolve(true)
+        }
+        
+        class Semaphore {
+            var resolved = false
+            var rejected: Int = 0
+            let max: Int
+            
+            var errors = [Any]()
+            init(_ count: Int) {
+                max = count
+            }
+        }
+        
+        let semaphore = Semaphore(promises.count)
+        let combo = Promise()
+        
+        promises.forEach {
+            promise in
+            _ = promise.then {
+                result in
+                if (!semaphore.resolved) {
+                    semaphore.resolved = true
+                    combo.resolve(result)
+                }
+                
+                return result
+            } .rescue {
+                error in
+                if (!semaphore.resolved) {
+                    if (nil != error) {
+                        semaphore.errors.append(error!)
+                    }
+                    
+                    semaphore.rejected += 1
+                    if (semaphore.max == semaphore.rejected) {
+                        combo.reject(semaphore.errors)
+                    }
+                }
+                
+                return error
+            }
+        }
+        
+        return combo
+    }
 }

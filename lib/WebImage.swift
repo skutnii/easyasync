@@ -74,17 +74,21 @@ class WebImage : Observable {
         }
     }
     
-    func fetch() -> Promise<WebImage> {
+    func fetch() -> Promise {
         return Fetch.url(url).then {
-            data in
+            result in
+            let data = result as? Data
+            guard nil != data else {
+                return self
+            }
             
             do {
-                try data.write(to: self.cache)
+                try data!.write(to: self.cache)
             } catch {
                 print("WebImage cache error")
             }
             
-            self.content = UIImage(data:data)
+            self.content = UIImage(data:data!)
             return self
         }
     }
