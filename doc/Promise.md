@@ -2,6 +2,10 @@
 
 This is the specification for promises defined in lib/Promise.swift. It is closely based on [Promises/A+ specification](https://promisesaplus.com/) but differs from it in several important points as promises defined here are type safe.
 
+This specification is intentionally minimal, several features of the implementation that I view as optional, are not covered, e.g. `chain` method.
+
+With questions and suggestions contact me Sergii Kutnii  mnkutster_at_gmail.com.
+
 ## 1 Terminology
 
 + 1.1 “promise” is an instance of `Promise<T>` generic class defined in lib/Promise.swift.
