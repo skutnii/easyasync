@@ -39,6 +39,7 @@
 		2277F303201E060E00100502 /* Observers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observers.swift; sourceTree = "<group>"; };
 		2277F304201E060E00100502 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		2277F309201E069B00100502 /* Fetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetch.swift; sourceTree = "<group>"; };
+		22C1800D202AFA7400489B36 /* Promise.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = Promise.md; path = ../doc/Promise.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +64,7 @@
 		2277F2DC201E056A00100502 = {
 			isa = PBXGroup;
 			children = (
+				22C1800D202AFA7400489B36 /* Promise.md */,
 				2277F300201E060E00100502 /* lib */,
 				2277F2E8201E056A00100502 /* EasySwift */,
 				2277F2F3201E056A00100502 /* EasySwiftTests */,
