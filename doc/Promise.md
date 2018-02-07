@@ -34,9 +34,9 @@ Let `promise1, promise2: Promise<T>`. Then, if `promise2` is chained after `prom
 ### 2.3 Rescue conditions
 + 2.3.1 A valid rescue handler is a closure receiving a single argument of any type
 + 2.3.2 A value `x` is said to meet the rescue condition for a valid rescue handler `R`, if
-```Swift
-(x is R) == true
-```
+    ```Swift
+    (x is R) == true
+    ```
 
 ## 3 `Promise<T>`
 
