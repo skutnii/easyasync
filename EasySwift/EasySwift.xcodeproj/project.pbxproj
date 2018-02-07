@@ -15,6 +15,7 @@
 		2277F307201E060E00100502 /* Observers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F303201E060E00100502 /* Observers.swift */; };
 		2277F308201E060E00100502 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F304201E060E00100502 /* Promise.swift */; };
 		2277F30A201E069B00100502 /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F309201E069B00100502 /* Fetch.swift */; };
+		22C18010202B03B100489B36 /* Promise.md in Resources */ = {isa = PBXBuildFile; fileRef = 22C1800F202B03B100489B36 /* Promise.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +40,7 @@
 		2277F303201E060E00100502 /* Observers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observers.swift; sourceTree = "<group>"; };
 		2277F304201E060E00100502 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		2277F309201E069B00100502 /* Fetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetch.swift; sourceTree = "<group>"; };
-		22C1800D202AFA7400489B36 /* Promise.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = Promise.md; path = ../doc/Promise.md; sourceTree = "<group>"; };
+		22C1800F202B03B100489B36 /* Promise.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Promise.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +65,7 @@
 		2277F2DC201E056A00100502 = {
 			isa = PBXGroup;
 			children = (
-				22C1800D202AFA7400489B36 /* Promise.md */,
+				22C1800E202B03B100489B36 /* doc */,
 				2277F300201E060E00100502 /* lib */,
 				2277F2E8201E056A00100502 /* EasySwift */,
 				2277F2F3201E056A00100502 /* EasySwiftTests */,
@@ -110,6 +111,15 @@
 			);
 			name = lib;
 			path = ../lib;
+			sourceTree = "<group>";
+		};
+		22C1800E202B03B100489B36 /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				22C1800F202B03B100489B36 /* Promise.md */,
+			);
+			name = doc;
+			path = ../doc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,6 +215,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22C18010202B03B100489B36 /* Promise.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
