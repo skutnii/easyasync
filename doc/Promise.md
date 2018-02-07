@@ -75,5 +75,6 @@ Here, “must not change” means immutable identity (i.e. ===), but does not im
     ```
     + 4.2.2.1 `success` must be called after `promise1` is fulfilled.
     + 4.2.2.2 If `success` returns a value, `promise2` must be fulfilled with the value.
-    + 4.2.2.3 If an error is thrown in `success`, `promise2` must be rejected with the error as reason. 
+    + 4.2.2.3 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
+    + 4.2.2.4 If `promise1` is rejected, `promise2` must be rejected with the same reason.
     
