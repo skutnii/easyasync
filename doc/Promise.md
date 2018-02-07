@@ -5,7 +5,7 @@ This is the specification for promises defined in lib/Promise.swift. It is close
 ## 1 Terminology
 
 + 1.1 “promise” is an instance of `Promise<T>` generic class defined in lib/Promise.swift.
-+ 1.2 “value” is any legal Swift value (including nil, a thenable, or a promise).
++ 1.2 “value” is any legal Swift value (including nil, or a promise).
 + 1.3 “error” is any Swift `Error` instance, including custom errors.
 + 1.4 “reason” is a value that indicates why a promise was rejected.
 
@@ -122,4 +122,42 @@ promise2 = promise1.rescue(handler)
 + 3.2.3.4 If `onError` was called and threw an error, `promise2` must be rejected with the error as reason.
 + 3.2.3.5 if `promise1` was rejected with a reason `r`, but `r` does not meet the rescue condition for `onError`, `onError` must not be called, and `promise2` must be rejected with `r` as reason.
 
+### 3.3 Initializers
 
+#### 3.3.1 Default initializer
+```Swift
+init()
+```
+Takes no parameters, creates a pending promise.
+
+#### 3.3.2 Asynchronous block initializer
+```Swift
+init(_ block: @escaping (_ resolve: @escaping (T) -> (), _reject: @escaping (Any?) -> ()) -> ())
+```
+Let `T` be some type,
+```Swift
+let myBlock: @escaping (_ resolve: @escaping (T) -> (), _reject: @escaping (Any?) -> ()) -> ()
+let promise = Promise<T>(myBlock)
+```
++ 3.3.2.1 The `promise` must be created in pending state.
++ 3.3.2.2 `myBlock` must be executed asynchronously later on.
++ 3.3.3.2 Implementation must ensure that the promise initialized this way is captured and exists at least until `myBlock` execution time.
++ 3.3.3.3 In the `myBlock` scope,
+    + 3.3.3.3.1 a call to `resolve` with `x` as an argument must resolve `promise` with value `x`;
+    + 3.3.3.3.2 a call to `reject` with  `r` as an argument must reject `promise` with reason `r`.
+
+### 3.4 Resolution
+
+#### 3.4.1 `resolve`
+```Swift
+func resolve(_ value: T)
+```
++ 3.4.1.1 If the callee is pending, resolves it with `value`.
++ 3.4.1.2 Does nothing otherwise.
+
+#### 3.4.2 `reject`
+```Swift
+func reject(_ reason: Any?)
+```
++ 3.4.2.1 If the callee is pending, rejects it with `reason`.
++ 3.4.2.2 Does nothing otherwise.
