@@ -59,13 +59,13 @@ class Fetch {
     }
     
     class func json(request: URLRequest) -> Promise<Any> {
-        return self.request(request).then(async:)  {
-            data in
+        return self.request(request).then  {
+            data -> Any in
             do {
                 let content = try JSONSerialization.jsonObject(with: data, options: [])
-                return Promise<Any>.resolve(content)
+                return content
             } catch {
-                return Promise<Any>.reject(FetchError.parseError)
+                throw FetchError.parseError
             }
         }
     }
