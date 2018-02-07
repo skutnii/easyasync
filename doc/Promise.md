@@ -32,7 +32,7 @@ Here, “must not change” means immutable identity (i.e. ===), but does not im
 + 3.1 Associated value type , e.g. `associatedtype Value`.
 + 3.2 A generic `then` method. Let `V` is the associated value type [3.1][3_1]. Then the signature of the method must be
   ```Swift
-  func then<O, E>(_ onSuccess: ((V) throws -> O)?, _ onFailure: ((E) throws -> O)?)
+  func then(_ onSuccess: ((V) throws -> ())?, _ onFailure: ((Any?) throws -> ())?)
   ```
 
 ## 4 `Promise<T>`
