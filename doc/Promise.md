@@ -4,11 +4,11 @@ This is the specification for promises defined in lib/Promise.swift. It is close
 
 ## 1. Terminology
 
-1.1 “promise” is an instance of `Promise<T>` generic class defined in lib/Promise.swift.
-1.2 “thenable” is an object confirming to `Thenable` protocol defined in lib/Promise.swift.
-1.3 “value” is any legal Swift value (including nil, a thenable, or a promise).
-1.4 “error” is any Swift `Error` instance, including custom errors.
-1.5 “reason” is a value that indicates why a promise was rejected.
+1.1     “promise” is an instance of `Promise<T>` generic class defined in lib/Promise.swift.
+1.2     “thenable” is an object confirming to `Thenable` protocol defined in lib/Promise.swift.
+1.3     “value” is any legal Swift value (including nil, a thenable, or a promise).
+1.4     “error” is any Swift `Error` instance, including custom errors.
+1.5     “reason” is a value that indicates why a promise was rejected.
 
 ## 2. Requirements
 
