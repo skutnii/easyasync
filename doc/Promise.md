@@ -31,6 +31,13 @@ Let `promise1, promise2: Promise<T>`. Then, if `promise2` is chained after `prom
 + 2.2.1 after `promise1` is fulfilled with the value `x`, `promise2` is also fulfilled with the same value;
 + 2.2.2 after `promise1` is rejected with some reason, `promise2` is also rejected with the same reason.
 
+### 2.3 Rescue conditions
++ 2.3.1 A valid rescue handler is a closure receiving a single argument of any type
++ 2.3.2 A value `x` is said to meet the rescue condition for a valid rescue handler `R`, if
+```Swift
+(x is R) == true
+```
+
 ## 3 `Promise<T>`
 
 ### 3.1 `then` methods
@@ -77,3 +84,42 @@ promise2 = promise1.then(success)
 + 3.1.2.5 If `promise1` is rejected, `promise2` must be rejected with the same reason.
     
 ### 3.2 `rescue` methods
+
+#### 3.2.1 Void `rescue`
+```Swift
+func rescue<E>(_ onError: @escaping (E) -> ())
+```
++ 3.2.1.1 After callee is rejected with reason `r`,
+    + 3.2.1.1.1 if `r` meets the rescue condition [2.3] for `onError`, `onError` must be called with `r` as an argument;
+    + 3.2.1.1.2 if `r` does not meet the rescue condition for `onError`, `onError` is not called.
++ 3.2.1.2 If callee is already rejected with reason `r` and `r`meets the rescue condition for `onError`, `onError` is called immediately with `r` as an argument.
+
+#### 3.2.2 Non-void `rescue`
+```Swift
+func rescue<E, O>(_ onError: @escaping (E) throws -> O) -> Promise<O>
+```
+Let `promise1: Promise<T>`, `E,O` be some types, `handler: (T) throws -> O` and
+```Swift
+promise2 = promise1.rescue(handler)
+```
++ 3.2.2.1 After `promise1` is rejected with reason `r`, and `r` meets the rescue condition [2.3] for `onError`, `onError` must be called with `r` as an argument.
++ 3.2.2.2 If `promise1` is already rejected with reason `r`, and `r`meets the rescue condition [2.3] for `onError`, `onError` must be called immediately with `r` as an argument.
++ 3.2.2.3 If `onError` was called and returned a value `x`, `promise2` must be resolved with `x` as value.
++ 3.2.2.4 If `onError` was called and threw an error, `promise2` must be rejected with the error as reason.
++ 3.2.2.5 if `promise1` was rejected with a reason `r`, but `r` does not meet the rescue condition for `onError`, `onError` must not be called, and `promise2` must be rejected with `r` as reason (this way an error will travel down the promise chain until it meets a matching rescue handler).
+
+#### 3.2.3 Non-void asynchronous `rescue`
+```Swift
+func rescue<E, O>(_ onError: @escaping (E) throws -> Promise<O>) -> Promise<O>
+```
+Let `promise1: Promise<T>`, `E,O` be some types, `handler: (T) throws -> Promise<O>` and
+```Swift
+promise2 = promise1.rescue(handler)
+```
++ 3.2.3.1 After `promise1` is rejected with reason `r`, and `r` meets the rescue condition [2.3] for `onError`, `onError` must be called with `r` as an argument.
++ 3.2.3.2 If `promise1` is already rejected with reason `r`, and `r`meets the rescue condition [2.3] for `onError`, `onError` must be called immediately with `r` as an argument.
++ 3.2.3.3 If `onError` was called and returned a promise `x`, `promise2` must be chained after `x` [2.2].
++ 3.2.3.4 If `onError` was called and threw an error, `promise2` must be rejected with the error as reason.
++ 3.2.3.5 if `promise1` was rejected with a reason `r`, but `r` does not meet the rescue condition for `onError`, `onError` must not be called, and `promise2` must be rejected with `r` as reason.
+
+
