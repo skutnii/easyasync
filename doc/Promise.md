@@ -32,7 +32,7 @@ Here, “must not change” means immutable identity (i.e. ===), but does not im
 + 3.1 Associated value type , e.g. `associatedtype Value`.
 + 3.2 A `then` method. Let `V` be the associated value type [3.1]. Then the signature of the method must be
   ```Swift
-  func then(_ onSuccess: ((V) throws -> ())?, _ onFailure: ((Any?) throws -> ())?)
+  func then(_ onSuccess: ((V) throws -> ())?, _ onFailure: ((Any?) -> ())?)
   ```
 
 ## 4 `Promise<T>`
@@ -52,3 +52,28 @@ A promise must be in one of three states: pending, fulfilled, or rejected.
     
 Here, “must not change” means immutable identity (i.e. ===), but does not imply deep immutability.
 
+### 4.2 `then` methods
+
++ 4.2.1 
+    ```Swift 
+    func then(_ onSuccess: ((T) throws -> ())?, _ onFailure: ((Any?) -> ())?)
+    ```
+    This is the untyped `then` required by `Thenable` protocol.
+    + 4.2.1.1 If `onSuccess` is `nil`, it is ignored.
+    + 4.2.1.2 If `onSuccess` is not nil, it must be called after the callee promise is fulfilled with the value of the promise.
+    + 4.2.1.3 If `onSuccess` throws an error when called with the promise's value [4.2.1.2],
+        + 4.2.1.3.1 if `onFailure` is not nil, `onFailure` is called with the error as its argument;
+        + 4.2.1.3.2 if `onFailure` is nil, the error must be caught by the callee promise.
+        
++ 4.2.2
+    ```Swift
+    func then<O>(_ onSuccess: @escaping (T) throws -> O) -> Promise<O>
+    ```
+    Let `promise1: Promise<T>`, `O` be some type, `success: (T) throws -> O` and 
+    ```Swift
+    promise2 = promise1.then(success)
+    ```
+    + 4.2.2.1 `success` must be called after `promise1` is fulfilled.
+    + 4.2.2.2 If `success` returns a value, `promise2` must be fulfilled with the value.
+    + 4.2.2.3 If an error is thrown in `success`, `promise2` must be rejected with the error as reason. 
+    
