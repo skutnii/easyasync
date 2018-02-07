@@ -56,7 +56,7 @@ Let `promise1: Promise<T>`, `O` be some type, `success: (T) throws -> O` and
 ```Swift
 promise2 = promise1.then(success)
 ```
-+ 3.1.2.1 `success` must be called after `promise1` is fulfilled.
++ 3.1.2.1 After `promise1` is fulfilled with a value `x`, `success` must be called with `x` as an argument.
 + 3.1.2.2 If callee is already fulfilled with a value `x` `success` is called immediately with `x` as an argument.
 + 3.1.2.3 If `success` returns a value `x`, `promise2` must be fulfilled with `x`.
 + 3.1.2.4 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
@@ -70,7 +70,7 @@ Let `promise1: Promise<T>`, `O` be some type, `success: (T) throws -> Promise<O>
 ```Swift
 promise2 = promise1.then(success)
 ```
-+ 3.1.3.1 `success` must be called after `promise1` is fulfilled.
++ 3.1.3.1 After `promise1` is fulfilled with a value `x`, `success` must be called with `x` as an argument.
 + 3.1.3.2 If callee is already fulfilled with a value `x` `success` is called immediately with `x` as an argument.
 + 3.1.3.3 If `success` returns `x: Promise<O>`, `promise2` must be chained after `x` [2.2].
 + 3.1.2.4 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
