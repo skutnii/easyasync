@@ -5,10 +5,9 @@ This is the specification for promises defined in lib/Promise.swift. It is close
 ## 1 Terminology
 
 + 1.1 “promise” is an instance of `Promise<T>` generic class defined in lib/Promise.swift.
-+ 1.2 “thenable” is an object confirming to `Thenable` protocol defined in lib/Promise.swift.
-+ 1.3 “value” is any legal Swift value (including nil, a thenable, or a promise).
-+ 1.4 “error” is any Swift `Error` instance, including custom errors.
-+ 1.5 “reason” is a value that indicates why a promise was rejected.
++ 1.2 “value” is any legal Swift value (including nil, a thenable, or a promise).
++ 1.3 “error” is any Swift `Error` instance, including custom errors.
++ 1.4 “reason” is a value that indicates why a promise was rejected.
 
 ## 2 Requirements
 
@@ -25,56 +24,56 @@ This is the specification for promises defined in lib/Promise.swift. It is close
     
 Here, “must not change” means immutable identity (i.e. ===), but does not imply deep immutability.
 
-## 3 `Thenable`
+### 2.2 Promise chaining
 
-`Thenable` protocol defines an object to which callbacks may be attached. The minimal interface for such a protocol must define at least
+Two promises of the same type may be chained after each other.
+Let `promise1, promise2: Promise<T>`. Then, if `promise2` is chained after `promise1`,
++ 2.2.1 after `promise1` is fulfilled with the value `x`, `promise2` is also fulfilled with the same value;
++ 2.2.2 after `promise1` is rejected with some reason, `promise2` is also rejected with the same reason.
 
-+ 3.1 Associated value type , e.g. `associatedtype Value`.
-+ 3.2 A `then` method. Let `V` be the associated value type [3.1]. Then the signature of the method must be
-  ```Swift
-  func then(_ onSuccess: ((V) throws -> ())?, _ onFailure: ((Any?) -> ())?)
-  ```
+## 3 `Promise<T>`
 
-## 4 `Promise<T>`
+### 3.1 `then` methods
 
-### 4.1 States
-
-A promise must be in one of three states: pending, fulfilled, or rejected.
-
-+ 4.1.1 When pending, a promise:
-    + 4.1.1.1 may transition to either the fulfilled or rejected state.
-+ 4.1.2 When fulfilled, a promise:
-    + 4.1.2.1 must not transition to any other state.
-    + 4.1.2.2 must have a value, which must not change.
-+ 4.1.3 When rejected, a promise:
-    + 4.1.3.1 must not transition to any other state.
-    + 4.1.3.2 must have a reason, which must not change.
+#### 3.1.1 Untyped `then`
+```Swift
+func then(_ onSuccess: ((T) throws -> ())?, _ onFailure: ((Any?) -> ())?)
+```
     
-Here, “must not change” means immutable identity (i.e. ===), but does not imply deep immutability.
-
-### 4.2 `then` methods
-
-+ 4.2.1 
-    ```Swift 
-    func then(_ onSuccess: ((T) throws -> ())?, _ onFailure: ((Any?) -> ())?)
-    ```
-    This is the untyped `then` required by `Thenable` protocol.
-    + 4.2.1.1 If `onSuccess` is `nil`, it is ignored.
-    + 4.2.1.2 If `onSuccess` is not nil, it must be called after the callee promise is fulfilled with the value of the promise.
-    + 4.2.1.3 If `onSuccess` throws an error when called with the promise's value [4.2.1.2],
-        + 4.2.1.3.1 if `onFailure` is not nil, `onFailure` is called with the error as its argument;
-        + 4.2.1.3.2 if `onFailure` is nil, the error must be caught by the callee promise.
++ 3.1.1.1 If `onSuccess` is `nil`, it is ignored.
++ 3.1.1.2 If `onSuccess` is not nil, it must be called after the callee promise is fulfilled with the value of the promise.
++ 3.1.1.3 If callee is already fulfilled with a value `x`, and `onSuccess` is not nil, `onSuccess` is called immediately with `x` as an argument.
++ 3.1.1.4 If callee is already rejected with a reason `r`, and `onError` is not nil, `onError` is called immediately with `r` as an argument.
++ 3.1.1.5 If `onSuccess` throws an error when called with the promise's value [3.1.1.2],
+    + 3.1.1.5.1 if `onFailure` is not nil, `onFailure` is called with the error as its argument;
+    + 3.1.1.5.2 if `onFailure` is nil, the error is ignored.
         
-+ 4.2.2 Typed `then` returning a promise
-    ```Swift
-    func then<O>(_ onSuccess: @escaping (T) throws -> O) -> Promise<O>
-    func then<O>(async onSuccess: (T) throws -> Promise<O>) -> Promise<O>
-    ```
-    Let `promise1: Promise<T>`, `O` be some type, `success` is a closure that accepts an argument of type `T` and returns either `O` or `Promise<O>` and 
-    ```Swift
-    promise2 = promise1.then(success)
-    ```
-    + 4.2.2.1 `success` must be called after `promise1` is fulfilled.
-    + 4.2.2.2 If `success` returns a value `x`, promise resolution procedure `[[Resolve]](promise2, x)` must be performed.
-    + 4.2.2.3 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
-    + 4.2.2.4 If `promise1` is rejected, `promise2` must be rejected with the same reason.
+#### 3.1.2 Typed `then`
+```Swift
+func then<O>(_ onSuccess: @escaping (T) throws -> O) -> Promise<O>
+```
+Let `promise1: Promise<T>`, `O` be some type, `success: (T) throws -> O` and
+```Swift
+promise2 = promise1.then(success)
+```
++ 3.1.2.1 `success` must be called after `promise1` is fulfilled.
++ 3.1.2.2 If callee is already fulfilled with a value `x` `success` is called immediately with `x` as an argument.
++ 3.1.2.3 If `success` returns a value `x`, `promise2` must be fulfilled with `x`.
++ 3.1.2.4 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
++ 3.1.2.5 If `promise1` is rejected, `promise2` must be rejected with the same reason.
+
+#### 3.1.3 Typed asynchronous `then`
+```Swift
+func then<O>(async onSuccess: @escaping (T) throws -> Promise<O>) -> Promise<O>
+```
+Let `promise1: Promise<T>`, `O` be some type, `success: (T) throws -> Promise<O>` and
+```Swift
+promise2 = promise1.then(success)
+```
++ 3.1.3.1 `success` must be called after `promise1` is fulfilled.
++ 3.1.3.2 If callee is already fulfilled with a value `x` `success` is called immediately with `x` as an argument.
++ 3.1.3.3 If `success` returns `x: Promise<O>`, `promise2` must be chained after `x` [2.2].
++ 3.1.2.4 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
++ 3.1.2.5 If `promise1` is rejected, `promise2` must be rejected with the same reason.
+    
+### 3.2 `rescue` methods
