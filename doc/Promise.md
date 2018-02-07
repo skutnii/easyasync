@@ -15,15 +15,18 @@ This is the specification for promises defined in lib/Promise.swift. It is close
 ### 2.1 Promise states
 
 2.1.1   When pending, a promise:
-        2.1.1.1         may transition to either the fulfilled or rejected state.
+
+2.1.1.1         may transition to either the fulfilled or rejected state.
     
 2.1.2   When fulfilled, a promise:
-        2.1.2.1         must not transition to any other state.
-        2.1.2.2         must have a value, which must not change.
+
+2.1.2.1         must not transition to any other state.
+2.1.2.2         must have a value, which must not change.
     
 2.1.3   When rejected, a promise:
-        2.1.3.1         must not transition to any other state.
-        2.1.3.2         must have a reason, which must not change.
+
+2.1.3.1         must not transition to any other state.
+2.1.3.2         must have a reason, which must not change.
     
 Here, “must not change” means immutable identity (i.e. ===), but does not imply deep immutability.
 
