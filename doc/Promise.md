@@ -65,16 +65,16 @@ Here, “must not change” means immutable identity (i.e. ===), but does not im
         + 4.2.1.3.1 if `onFailure` is not nil, `onFailure` is called with the error as its argument;
         + 4.2.1.3.2 if `onFailure` is nil, the error must be caught by the callee promise.
         
-+ 4.2.2
++ 4.2.2 Typed `then` returning a promise
     ```Swift
     func then<O>(_ onSuccess: @escaping (T) throws -> O) -> Promise<O>
+    func then<O>(async onSuccess: (T) throws -> Promise<O>) -> Promise<O>
     ```
-    Let `promise1: Promise<T>`, `O` be some type, `success: (T) throws -> O` and 
+    Let `promise1: Promise<T>`, `O` be some type, `success` is a closure that accepts an argument of type `T` and returns either `O` or `Promise<O>` and 
     ```Swift
     promise2 = promise1.then(success)
     ```
     + 4.2.2.1 `success` must be called after `promise1` is fulfilled.
-    + 4.2.2.2 If `success` returns a value, `promise2` must be fulfilled with the value.
+    + 4.2.2.2 If `success` returns a value `x`, promise resolution procedure `[[Resolve]](promise2, x)` must be performed.
     + 4.2.2.3 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
     + 4.2.2.4 If `promise1` is rejected, `promise2` must be rejected with the same reason.
-    
