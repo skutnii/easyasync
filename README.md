@@ -229,7 +229,7 @@ Here, because the promise keeps strong references to its `then` blocks, `MyClass
 
 Of course, the cycle can be broken by weakly referencing `self` in a `then` handler, but it would be much better not to keep the reference to promise at all.
 
-Because after a promise is fulfilled or rejected it cannot transition to any other state, it is essentially a one-time object, so a stored promise is of very limited use.
+Because after a promise is fulfilled or rejected it cannot transition to any other state, the promise is essentially a one-time object, so a stored promise is of very limited use.
 
 A promise should be treated as a transient object. A better implemetation of `MyClass` would be
 ```Swift
