@@ -213,7 +213,7 @@ class MyClass {
         }
         
         let data = promise.value!
-        //Do somethind with data
+        //Do something with data
     }
     
     init(request: URLRequest) {
@@ -242,7 +242,7 @@ class MyClass {
         }
 
         let theData = data!
-        //Do somethind with theData
+        //Do something with theData
     }
 
     init(request: URLRequest) {
