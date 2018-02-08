@@ -148,7 +148,7 @@ public convenience init(_ initializer: @escaping Initializer) {
 The `initializer` block's execution is deferred until later time (in current implementation it is scheduled asynchronously on the main dispatch queue), and the promise is created in pending state.
 When `initializer` is called, the first parameter is the promise's `resolve`. and the second -- `reject` method.
 
-Note the similarity between `fetchSecondData` and `fetchThirdData`. In fact, the task of passing down data with a promise would be so common, that the solution has been added to `Promise<T>`itself with the `&&&` operator.
+Note the similarity between `fetchSecondData` and `fetchThirdData` in the example above. In fact, the task of passing down data with a promise would be so common, that the solution has been added to `Promise<T>`itself with the `&&&` operator.
 
 Let us say you have `promise1: Promise<T1>` and `value2: T2`. Then `promise1 &&& value2` yields a `Promise<(T1, T2)>` that
 - if `promise1` is resolved, is resolved with tuple value `(promise1.value!, value2)`;
@@ -200,3 +200,95 @@ The `&&&` and `|||` operators provide a substitute for JavaScript [`Promise.all`
 Because of type safety, exact equivalents would be much less useful than in JavaScript.
 
 #### Promises and memory management
+
+The best memory management rule for promises is probably **don't keep swift promises**.
+Consider the following example:
+```Swift
+class MyClass {
+    var promise: Promise<Data> = Promise<Data>()
+    
+    func processData() {
+        guard .fulfilled == promise.state else {
+            return
+        }
+        
+        let data = promise.value!
+        //Do somethind with data
+    }
+    
+    init(request: URLRequest) {
+        promise = Fetch.request(request).then {
+            _ in
+            //Memory leak!
+            self.processData()
+        }
+    }
+}
+```
+Here, because the promise keeps strong references to its `then` blocks, `MyClass` owns a promise, and `self` is captured in a `then` block, a retain cycle is created which results in a memory leak.
+
+Of course, the cycle can be broken by weakly referencing `self` in a `then` handler, but it would be much better not to keep the reference to promise at all.
+
+Because after a promise is fulfilled or rejected it cannot transition to any other state, it is essentially a one-time object, so a stored promise is of very limited use.
+
+A promise should be treated as a transient object. A better implemetation of `MyClass` would be
+```Swift
+class MyClass {
+    var data: Data?
+
+    func processData() {
+        guard nil != data else {
+            return
+        }
+
+        let theData = data!
+        //Do somethind with theData
+    }
+
+    init(request: URLRequest) {
+        Fetch.request(request).then {
+            data in
+            //No memory leak here, even though self is captured
+            self.data = data
+            self.processData()
+        }
+    }
+}
+```
+
+So who keeps the promise for you? Let us look inside the `Fetch.request(_:)` implementation
+```Swift
+class Fetch {
+    class func request(_ request: URLRequest) -> Promise<Data> {
+        return Promise {
+            resolve, reject in
+
+            URLSession.shared.dataTask(with: request) {
+                data, response, error in
+                guard nil == error else {
+                    reject(FetchError.connectionError)
+                    return
+                }
+
+                let code = (response as? HTTPURLResponse)?.statusCode ?? 400
+                guard code <= 400 else {
+                    reject(FetchError.httpError(code))
+                    return
+                }
+
+                guard nil != data else {
+                    reject(FetchError.noData)
+                    return
+                }
+
+                resolve(data!)
+            } .resume()
+        }
+    }
+}
+```
+The promise is constructed with the asynchronous initializer (see previous section). The initializer closure is scheduled on the main dispatch queue and the reference to the promise is implicitly held via `resolve` and `reject` parameters until the initializer is executed.
+
+When executed, the initializer block captures `resolve` and `reject` in the data task completion block which essentially transfers ownership of the promise to `URLSession`.
+
+So in this case a promise is owned by `Fetch` implementation. If you are using promises in your own solution, you should follow the same pattern. When wrapping a callback-based API in promises, capture promises in callbacks.
