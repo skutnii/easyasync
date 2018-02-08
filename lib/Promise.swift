@@ -8,6 +8,9 @@
 
 import Foundation
 
+infix operator &&&: MultiplicationPrecedence
+infix operator |||: AdditionPrecedence
+
 public class Promise<T>  {
     
     public enum State {
@@ -216,5 +219,97 @@ public class Promise<T>  {
         promise.reject(reason)
         return promise
     }
+    
+    public static func &&&<V>(left: Promise<T>, right: V) -> Promise<(T, V)> {
+        let promise = Promise<(T, V)>()
+        left.then({
+            value in
+            promise.resolve((value, right))
+        }, {
+            reason in
+            promise.reject(reason)
+        })
+        
+        return promise
+    }
+
+    public static func &&&<V>(left: V, right: Promise<T>) -> Promise<(V, T)> {
+        let promise = Promise<(V, T)>()
+        right.then({
+            value in
+            promise.resolve((left, value))
+        }, {
+            reason in
+            promise.reject(reason)
+        })
+        
+        return promise
+    }
 
 }
+
+public func &&&<V1, V2>(left: Promise<V1>, right: Promise<V2>) -> Promise<(V1, V2)> {
+    let promise = Promise<(V1, V2)>()
+    var values: (V1?, V2?) = (nil, nil)
+    var counter = 0
+    func incrementCounter() {
+        counter += 1
+        if 2 == counter {
+            let (value1, value2) = values
+            promise.resolve((value1!, value2!))
+        }
+    }
+    
+    left.then {
+        value in
+        values.0 = value
+        incrementCounter()
+    } .rescue {
+        reason in
+        promise.reject(reason)
+    }
+    
+    right.then {
+        value in
+        values.1 = value
+        incrementCounter()
+    } .rescue {
+        reason  in
+        promise.reject(reason)
+    }
+    
+    return promise
+}
+
+public func |||<V1, V2>(left: Promise<V1>, right: Promise<V2>) -> Promise<Any> {
+    let promise = Promise<Any>()
+    var errors: (Any?, Any?) = (nil, nil)
+    var counter = 0
+    func incrementCounter() {
+        counter += 1
+        if 2 == counter {
+            promise.reject(errors)
+        }
+    }
+    
+    left.then {
+        value in
+        promise.resolve(value)
+    } .rescue {
+        (reason: Any?) in
+        errors.0 = reason
+        incrementCounter()
+    }
+    
+    right.then {
+        value in
+        promise.resolve(value)
+    } .rescue {
+        (reason: Any?) in
+        errors.1 = reason
+        incrementCounter()
+    }
+    
+    return promise
+}
+

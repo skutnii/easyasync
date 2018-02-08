@@ -7,7 +7,6 @@
 //
 
 import XCTest
-@testable import EasySwift
 
 class EasySwiftTests: XCTestCase {
     
@@ -19,6 +18,11 @@ class EasySwiftTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+    }
+    
+    func testPromiseAndLeft() {
+        let promise1 = Promise<Bool>()
+        let promise2: Promise<(Bool, Bool)> = promise1 &&& false
     }
     
     func testExample() {
