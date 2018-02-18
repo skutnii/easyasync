@@ -97,7 +97,9 @@ func rescue<E>(_ onError: @escaping (E) -> ())
 + 3.2.1.1 After callee is rejected with reason `r`,
     + 3.2.1.1.1 if `r` meets the rescue condition [2.3] for `onError`, `onError` must be called with `r` as an argument;
     + 3.2.1.1.2 if `r` does not meet the rescue condition for `onError`, `onError` is not called.
-+ 3.2.1.2 If callee is already rejected with reason `r` and `r`meets the rescue condition for `onError`, `onError` is called immediately with `r` as an argument.
++ 3.2.1.2 If callee is already rejected with reason `r,
+    +`3.2.1.2.1 if `r`meets the rescue condition for `onError`, `onError` is called immediately with `r` as an argument;
+    + 3.2.1.2.2 if `r` does not meet the rescue condition for `onError`, `onError` is not called.
 
 #### 3.2.2 Non-void `rescue`
 ```Swift

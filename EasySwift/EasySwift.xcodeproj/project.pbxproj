@@ -17,6 +17,7 @@
 		22E675B12039B942008EB6F5 /* PromiseStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E675B02039B942008EB6F5 /* PromiseStateTests.swift */; };
 		22E675B32039C187008EB6F5 /* PromiseChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E675B22039C187008EB6F5 /* PromiseChainTests.swift */; };
 		22E675B52039C46F008EB6F5 /* PromiseThenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E675B42039C46F008EB6F5 /* PromiseThenTests.swift */; };
+		22E675B72039E03A008EB6F5 /* PromiseRescueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E675B62039E03A008EB6F5 /* PromiseRescueTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		22E675B02039B942008EB6F5 /* PromiseStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseStateTests.swift; sourceTree = "<group>"; };
 		22E675B22039C187008EB6F5 /* PromiseChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseChainTests.swift; sourceTree = "<group>"; };
 		22E675B42039C46F008EB6F5 /* PromiseThenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseThenTests.swift; sourceTree = "<group>"; };
+		22E675B62039E03A008EB6F5 /* PromiseRescueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseRescueTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 				22E675B02039B942008EB6F5 /* PromiseStateTests.swift */,
 				22E675B22039C187008EB6F5 /* PromiseChainTests.swift */,
 				22E675B42039C46F008EB6F5 /* PromiseThenTests.swift */,
+				22E675B62039E03A008EB6F5 /* PromiseRescueTests.swift */,
 			);
 			path = EasySwiftTests;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				22E675B12039B942008EB6F5 /* PromiseStateTests.swift in Sources */,
+				22E675B72039E03A008EB6F5 /* PromiseRescueTests.swift in Sources */,
 				22C18016202BD43500489B36 /* Promise.swift in Sources */,
 				22E675B52039C46F008EB6F5 /* PromiseThenTests.swift in Sources */,
 				22E675B32039C187008EB6F5 /* PromiseChainTests.swift in Sources */,
