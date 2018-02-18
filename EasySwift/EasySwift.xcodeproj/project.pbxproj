@@ -7,18 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2277F2F5201E056A00100502 /* EasySwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F2F4201E056A00100502 /* EasySwiftTests.swift */; };
 		2277F2F7201E056A00100502 /* EasySwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 2277F2E9201E056A00100502 /* EasySwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2277F305201E060E00100502 /* JSQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F301201E060E00100502 /* JSQ.swift */; };
 		2277F306201E060E00100502 /* WebImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F302201E060E00100502 /* WebImage.swift */; };
 		2277F307201E060E00100502 /* Observers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F303201E060E00100502 /* Observers.swift */; };
 		2277F308201E060E00100502 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F304201E060E00100502 /* Promise.swift */; };
 		2277F30A201E069B00100502 /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F309201E069B00100502 /* Fetch.swift */; };
-		22C18012202BD43500489B36 /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F309201E069B00100502 /* Fetch.swift */; };
-		22C18013202BD43500489B36 /* JSQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F301201E060E00100502 /* JSQ.swift */; };
-		22C18014202BD43500489B36 /* WebImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F302201E060E00100502 /* WebImage.swift */; };
-		22C18015202BD43500489B36 /* Observers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F303201E060E00100502 /* Observers.swift */; };
 		22C18016202BD43500489B36 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F304201E060E00100502 /* Promise.swift */; };
+		22E675B12039B942008EB6F5 /* PromiseStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E675B02039B942008EB6F5 /* PromiseStateTests.swift */; };
+		22E675B32039C187008EB6F5 /* PromiseChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E675B22039C187008EB6F5 /* PromiseChainTests.swift */; };
+		22E675B52039C46F008EB6F5 /* PromiseThenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22E675B42039C46F008EB6F5 /* PromiseThenTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +34,6 @@
 		2277F2E9201E056A00100502 /* EasySwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EasySwift.h; sourceTree = "<group>"; };
 		2277F2EA201E056A00100502 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2277F2EF201E056A00100502 /* EasySwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasySwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2277F2F4201E056A00100502 /* EasySwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasySwiftTests.swift; sourceTree = "<group>"; };
 		2277F2F6201E056A00100502 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2277F301201E060E00100502 /* JSQ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSQ.swift; sourceTree = "<group>"; };
 		2277F302201E060E00100502 /* WebImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebImage.swift; sourceTree = "<group>"; };
@@ -45,6 +42,9 @@
 		2277F309201E069B00100502 /* Fetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetch.swift; sourceTree = "<group>"; };
 		22C1800F202B03B100489B36 /* Promise.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Promise.md; sourceTree = "<group>"; };
 		22C18011202BA92500489B36 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		22E675B02039B942008EB6F5 /* PromiseStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseStateTests.swift; sourceTree = "<group>"; };
+		22E675B22039C187008EB6F5 /* PromiseChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseChainTests.swift; sourceTree = "<group>"; };
+		22E675B42039C46F008EB6F5 /* PromiseThenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseThenTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +98,10 @@
 		2277F2F3201E056A00100502 /* EasySwiftTests */ = {
 			isa = PBXGroup;
 			children = (
-				2277F2F4201E056A00100502 /* EasySwiftTests.swift */,
 				2277F2F6201E056A00100502 /* Info.plist */,
+				22E675B02039B942008EB6F5 /* PromiseStateTests.swift */,
+				22E675B22039C187008EB6F5 /* PromiseChainTests.swift */,
+				22E675B42039C46F008EB6F5 /* PromiseThenTests.swift */,
 			);
 			path = EasySwiftTests;
 			sourceTree = "<group>";
@@ -248,12 +250,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22C18012202BD43500489B36 /* Fetch.swift in Sources */,
-				22C18013202BD43500489B36 /* JSQ.swift in Sources */,
-				22C18014202BD43500489B36 /* WebImage.swift in Sources */,
-				22C18015202BD43500489B36 /* Observers.swift in Sources */,
+				22E675B12039B942008EB6F5 /* PromiseStateTests.swift in Sources */,
 				22C18016202BD43500489B36 /* Promise.swift in Sources */,
-				2277F2F5201E056A00100502 /* EasySwiftTests.swift in Sources */,
+				22E675B52039C46F008EB6F5 /* PromiseThenTests.swift in Sources */,
+				22E675B32039C187008EB6F5 /* PromiseChainTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

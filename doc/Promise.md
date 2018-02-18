@@ -53,11 +53,12 @@ func then(_ onSuccess: ((T) throws -> ())?, _ onFailure: ((Any?) -> ())?)
     
 + 3.1.1.1 If `onSuccess` is `nil`, it is ignored.
 + 3.1.1.2 If `onSuccess` is not nil, it must be called after the callee promise is fulfilled with the value of the promise.
-+ 3.1.1.3 If callee is already fulfilled with a value `x`, and `onSuccess` is not nil, `onSuccess` is called immediately with `x` as an argument.
-+ 3.1.1.4 If callee is already rejected with a reason `r`, and `onError` is not nil, `onError` is called immediately with `r` as an argument.
-+ 3.1.1.5 If `onSuccess` throws an error when called with the promise's value [3.1.1.2],
-    + 3.1.1.5.1 if `onFailure` is not nil, `onFailure` is called with the error as its argument;
-    + 3.1.1.5.2 if `onFailure` is nil, the error is ignored.
++ 3.1.1.3 if `onFailure` is not nil, it must be called after the callee promise is rejected with the promise's rejection reason as an argument.
++ 3.1.1.4 If callee is already fulfilled with a value `x`, and `onSuccess` is not nil, `onSuccess` is called immediately with `x` as an argument.
++ 3.1.1.5 If callee is already rejected with a reason `r`, and `onFailure` is not nil, `onFailure` is called immediately with `r` as an argument.
++ 3.1.1.6 If `onSuccess` throws an error when called with the promise's value [3.1.1.2],
+    + 3.1.1.6.1 if `onFailure` is not nil, `onFailure` is called with the error as its argument;
+    + 3.1.1.6.2 if `onFailure` is nil, the error is ignored.
         
 #### 3.1.2 Typed `then`
 ```Swift
