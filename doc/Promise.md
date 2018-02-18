@@ -56,7 +56,7 @@ func then(_ onSuccess: ((T) throws -> ())?, _ onFailure: ((Any?) -> ())?)
 + 3.1.1.3 if `onFailure` is not nil, it must be called after the callee promise is rejected with the promise's rejection reason as an argument.
 + 3.1.1.4 If callee is already fulfilled with a value `x`, and `onSuccess` is not nil, `onSuccess` is called immediately with `x` as an argument.
 + 3.1.1.5 If callee is already rejected with a reason `r`, and `onFailure` is not nil, `onFailure` is called immediately with `r` as an argument.
-+ 3.1.1.6 If `onSuccess` throws an error when called with the promise's value [3.1.1.2],
++ 3.1.1.6 If `onSuccess` throws an error when called with the promise's value [3.1.1.2][3.1.1.4],
     + 3.1.1.6.1 if `onFailure` is not nil, `onFailure` is called with the error as its argument;
     + 3.1.1.6.2 if `onFailure` is nil, the error is ignored.
         
@@ -85,8 +85,8 @@ promise2 = promise1.then(success)
 + 3.1.3.1 After `promise1` is fulfilled with a value `x`, `success` must be called with `x` as an argument.
 + 3.1.3.2 If callee is already fulfilled with a value `x` `success` is called immediately with `x` as an argument.
 + 3.1.3.3 If `success` returns `x: Promise<O>`, `promise2` must be chained after `x` [2.2].
-+ 3.1.2.4 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
-+ 3.1.2.5 If `promise1` is rejected, `promise2` must be rejected with the same reason.
++ 3.1.3.4 If an error is thrown in `success`, `promise2` must be rejected with the error as reason.
++ 3.1.3.5 If `promise1` is rejected, `promise2` must be rejected with the same reason.
     
 ### 3.2 `rescue` methods
 
