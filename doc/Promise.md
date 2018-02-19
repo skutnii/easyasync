@@ -109,11 +109,11 @@ Let `promise1: Promise<T>`, `E,O` be some types, `handler: (T) throws -> O` and
 ```Swift
 promise2 = promise1.rescue(handler)
 ```
-+ 3.2.2.1 After `promise1` is rejected with reason `r`, and `r` meets the rescue condition [2.3] for `onError`, `onError` must be called with `r` as an argument.
-+ 3.2.2.2 If `promise1` is already rejected with reason `r`, and `r`meets the rescue condition [2.3] for `onError`, `onError` must be called immediately with `r` as an argument.
-+ 3.2.2.3 If `onError` was called and returned a value `x`, `promise2` must be resolved with `x` as value.
-+ 3.2.2.4 If `onError` was called and threw an error, `promise2` must be rejected with the error as reason.
-+ 3.2.2.5 if `promise1` was rejected with a reason `r`, but `r` does not meet the rescue condition for `onError`, `onError` must not be called, and `promise2` must be rejected with `r` as reason (this way an error will travel down the promise chain until it meets a matching rescue handler).
++ 3.2.2.1 After `promise1` is rejected with reason `r`, and `r` meets the rescue condition [2.3] for `handler`, `handler` must be called with `r` as an argument.
++ 3.2.2.2 If `promise1` is already rejected with reason `r`, and `r`meets the rescue condition [2.3] for `handler`, `handler` must be called immediately with `r` as an argument.
++ 3.2.2.3 If `handler` was called and returned a value `x`, `promise2` must be resolved with `x` as value.
++ 3.2.2.4 If `handler` was called and threw an error, `promise2` must be rejected with the error as reason.
++ 3.2.2.5 if `promise1` was rejected with a reason `r`, but `r` does not meet the rescue condition for `handler`, `handler` must not be called, and `promise2` must be rejected with `r` as reason (this way an error will travel down the promise chain until it meets a matching rescue handler).
 
 #### 3.2.3 Non-void asynchronous `rescue`
 ```Swift
@@ -123,11 +123,11 @@ Let `promise1: Promise<T>`, `E,O` be some types, `handler: (T) throws -> Promise
 ```Swift
 promise2 = promise1.rescue(handler)
 ```
-+ 3.2.3.1 After `promise1` is rejected with reason `r`, and `r` meets the rescue condition [2.3] for `onError`, `onError` must be called with `r` as an argument.
-+ 3.2.3.2 If `promise1` is already rejected with reason `r`, and `r`meets the rescue condition [2.3] for `onError`, `onError` must be called immediately with `r` as an argument.
-+ 3.2.3.3 If `onError` was called and returned a promise `x`, `promise2` must be chained after `x` [2.2].
-+ 3.2.3.4 If `onError` was called and threw an error, `promise2` must be rejected with the error as reason.
-+ 3.2.3.5 if `promise1` was rejected with a reason `r`, but `r` does not meet the rescue condition for `onError`, `onError` must not be called, and `promise2` must be rejected with `r` as reason.
++ 3.2.3.1 After `promise1` is rejected with reason `r`, and `r` meets the rescue condition [2.3] for `handler`, `handler` must be called with `r` as an argument.
++ 3.2.3.2 If `promise1` is already rejected with reason `r`, and `r`meets the rescue condition [2.3] for `handler`, `handler` must be called immediately with `r` as an argument.
++ 3.2.3.3 If `handler` was called and returned a promise `x`, `promise2` must be chained after `x` [2.2].
++ 3.2.3.4 If `handler` was called and threw an error, `promise2` must be rejected with the error as reason.
++ 3.2.3.5 if `promise1` was rejected with a reason `r`, but `r` does not meet the rescue condition for `handler`, `handler` must not be called, and `promise2` must be rejected with `r` as reason.
 
 ### 3.3 Initializers
 
