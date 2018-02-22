@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		220CE537203F179D000EB022 /* PromiseConvenienceMethodsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220CE536203F179D000EB022 /* PromiseConvenienceMethodsTests.swift */; };
+		220CE539203F1CE7000EB022 /* PromiseOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220CE538203F1CE7000EB022 /* PromiseOperatorTests.swift */; };
 		2277F2F7201E056A00100502 /* EasySwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 2277F2E9201E056A00100502 /* EasySwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2277F305201E060E00100502 /* JSQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F301201E060E00100502 /* JSQ.swift */; };
 		2277F306201E060E00100502 /* WebImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F302201E060E00100502 /* WebImage.swift */; };
@@ -31,6 +33,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		220CE536203F179D000EB022 /* PromiseConvenienceMethodsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseConvenienceMethodsTests.swift; sourceTree = "<group>"; };
+		220CE538203F1CE7000EB022 /* PromiseOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseOperatorTests.swift; sourceTree = "<group>"; };
 		2277F2E6201E056A00100502 /* EasySwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EasySwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2277F2E9201E056A00100502 /* EasySwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EasySwift.h; sourceTree = "<group>"; };
 		2277F2EA201E056A00100502 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -105,6 +109,8 @@
 				22E675B22039C187008EB6F5 /* PromiseChainTests.swift */,
 				22E675B42039C46F008EB6F5 /* PromiseThenTests.swift */,
 				22E675B62039E03A008EB6F5 /* PromiseRescueTests.swift */,
+				220CE536203F179D000EB022 /* PromiseConvenienceMethodsTests.swift */,
+				220CE538203F1CE7000EB022 /* PromiseOperatorTests.swift */,
 			);
 			path = EasySwiftTests;
 			sourceTree = "<group>";
@@ -255,6 +261,8 @@
 			files = (
 				22E675B12039B942008EB6F5 /* PromiseStateTests.swift in Sources */,
 				22E675B72039E03A008EB6F5 /* PromiseRescueTests.swift in Sources */,
+				220CE537203F179D000EB022 /* PromiseConvenienceMethodsTests.swift in Sources */,
+				220CE539203F1CE7000EB022 /* PromiseOperatorTests.swift in Sources */,
 				22C18016202BD43500489B36 /* Promise.swift in Sources */,
 				22E675B52039C46F008EB6F5 /* PromiseThenTests.swift in Sources */,
 				22E675B32039C187008EB6F5 /* PromiseChainTests.swift in Sources */,
