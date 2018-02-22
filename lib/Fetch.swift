@@ -19,30 +19,29 @@ public enum FetchError : Error {
 class Fetch {
     
     class func request(_ request: URLRequest) -> Promise<Data> {
-        return Promise {
-            resolve, reject in
+        let promise = Promise<Data>()
+        URLSession.shared.dataTask(with: request) {
+            data, response, error in
+            guard nil == error else {
+                promise.reject(FetchError.connectionError)
+                return
+            }
             
-            URLSession.shared.dataTask(with: request) {
-                data, response, error in
-                guard nil == error else {
-                    reject(FetchError.connectionError)
-                    return
-                }
-                
-                let code = (response as? HTTPURLResponse)?.statusCode ?? 400
-                guard code <= 400 else {
-                    reject(FetchError.httpError(code))
-                    return
-                }
-                
-                guard nil != data else {
-                    reject(FetchError.noData)
-                    return
-                }
-                
-                resolve(data!)
-            } .resume()
-        }
+            let code = (response as? HTTPURLResponse)?.statusCode ?? 400
+            guard code <= 400 else {
+                promise.reject(FetchError.httpError(code))
+                return
+            }
+            
+            guard nil != data else {
+                promise.reject(FetchError.noData)
+                return
+            }
+            
+            promise.resolve(data!)
+        } .resume()
+        
+        return promise
     }
     
     class func url(_ url: URL) -> Promise<Data> {
@@ -52,7 +51,7 @@ class Fetch {
     class func from(_ link: String) -> Promise<Data> {
         let url = URL(string: link)
         guard nil != url else {
-            return Promise.reject(FetchError.invalidLink(link))
+            return Promise<Data>.reject(FetchError.invalidLink(link))
         }
         
         return request(URLRequest(url: url!))
