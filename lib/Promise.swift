@@ -223,7 +223,7 @@ public class Promise<T>  {
     }
     
     public func discard() {
-        
+        self.reject(Rejection.discarded)
     }
     
     public class func resolve(_ value: T) -> Promise<T> {
