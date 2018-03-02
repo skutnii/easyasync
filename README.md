@@ -256,7 +256,7 @@ class MyClass {
 }
 ```
 
-So who keeps the promise for you? Let us look inside the `Fetch.request(_:)` implementation
+So who keeps the promise for you? Consider this simplified (without the discard feature) `Fetch.request(_:)` implementation:
 ```Swift
 class Fetch {
     class func request(_ request: URLRequest) -> Promise<Data> {
