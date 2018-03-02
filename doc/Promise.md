@@ -144,11 +144,15 @@ Takes no parameters, creates a pending promise.
 
 #### 3.3.2 Asynchronous block initializer
 ```Swift
-init(_ block: @escaping (_ resolve: @escaping (T) -> (), _ reject: @escaping (Any?) -> (), _ discard: @escaping (@escaping () -> ()) -> ()) -> ())
+init(_ block: @escaping (_ resolve: @escaping (T) -> (),
+    _ reject: @escaping (Any?) -> (),
+    _ discard: @escaping (@escaping () -> ()) -> ()) -> ())
 ```
 Let `T` be some type,
 ```Swift
-let myBlock: (_ resolve: @escaping (T) -> (), _ reject: @escaping (Any?) -> (), _ discard: @escaping (@escaping () -> ()) -> ()) -> ()
+let myBlock: (_ resolve: @escaping (T) -> (),
+                _ reject: @escaping (Any?) -> (),
+                _ discard: @escaping (@escaping () -> ()) -> ()) -> ()
 let promise = Promise<T>(myBlock)
 ```
 + 3.3.2.1 The `promise` must be created in pending state.
