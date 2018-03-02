@@ -200,6 +200,7 @@ public class Promise<T>  {
     }
     
     public typealias Discarder = () -> ()
+    private var _discard: Discarder?
     
     public typealias Initializer = (@escaping (T) -> (), @escaping (Any?) -> (),  @escaping (@escaping Discarder) -> ()) -> ()
     public convenience init(_ initializer: @escaping Initializer) {
@@ -207,6 +208,7 @@ public class Promise<T>  {
         
         let discard = {
             (block: @escaping () -> ()) -> () in
+            self._discard = block
         }
         
         DispatchQueue.main.async {
@@ -216,6 +218,7 @@ public class Promise<T>  {
     
     public convenience init(discard block: @escaping Discarder) {
         self.init()
+        _discard = block
     }
     
     public enum Rejection {
@@ -224,6 +227,7 @@ public class Promise<T>  {
     
     public func discard() {
         self.reject(Rejection.discarded)
+        _discard?()
     }
     
     public class func resolve(_ value: T) -> Promise<T> {
