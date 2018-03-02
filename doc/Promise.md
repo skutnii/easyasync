@@ -145,14 +145,12 @@ Takes no parameters, creates a pending promise.
 #### 3.3.2 Asynchronous block initializer
 ```Swift
 init(_ block: @escaping (_ resolve: @escaping (T) -> (),
-    _ reject: @escaping (Any?) -> (),
-    _ discard: @escaping (@escaping () -> ()) -> ()) -> ())
+    _ reject: @escaping (Any?) -> ()) -> ())
 ```
 Let `T` be some type,
 ```Swift
 let myBlock: (_ resolve: @escaping (T) -> (),
-                _ reject: @escaping (Any?) -> (),
-                _ discard: @escaping (@escaping () -> ()) -> ()) -> ()
+                _ reject: @escaping (Any?) -> ()) -> ()) -> ()
 let promise = Promise<T>(myBlock)
 ```
 + 3.3.2.1 The `promise` must be created in pending state.
@@ -160,8 +158,7 @@ let promise = Promise<T>(myBlock)
 + 3.3.3.2 Implementation must ensure that the promise initialized this way is captured and exists at least until `myBlock` execution time.
 + 3.3.3.3 In the `myBlock` scope,
     + 3.3.3.3.1 a call to `resolve` with `x` as an argument must resolve `promise` with value `x`;
-    + 3.3.3.3.2 a call to `reject` with  `r` as an argument must reject `promise` with reason `r`;
-    + 3.3.3.3.3 a call to `discard` sets the discard block for the promise. The discard block is used to discard the promise value computations.
+    + 3.3.3.3.2 a call to `reject` with  `r` as an argument must reject `promise` with reason `r`.
     
 #### 3.3.3 Discarding initializer
 ```Swift

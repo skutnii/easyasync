@@ -41,4 +41,5 @@ class PromiseDiscardTests: XCTestCase {
         promise.discard()
         XCTAssert(blockCalled, "Discard must call the discard block")
     }
+
 }
