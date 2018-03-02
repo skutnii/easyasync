@@ -222,6 +222,10 @@ public class Promise<T>  {
         case discarded
     }
     
+    public func discard() {
+        
+    }
+    
     public class func resolve(_ value: T) -> Promise<T> {
         let promise = Promise<T>()
         promise.resolve(value)

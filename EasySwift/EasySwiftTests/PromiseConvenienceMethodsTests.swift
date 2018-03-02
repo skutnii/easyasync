@@ -23,7 +23,7 @@ class PromiseConvenienceMethodsTests: XCTestCase {
     func testConvenienceInitializer() {
         let expectation = XCTestExpectation(description: "Initializer block must be called asynchronously")
         let promise = Promise<Bool> {
-            resolve, reject in
+            resolve, reject, discard in
             expectation.fulfill()
             resolve(true)
         }
