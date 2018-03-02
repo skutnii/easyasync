@@ -31,4 +31,14 @@ class PromiseDiscardTests: XCTestCase {
         
         XCTAssert(.discarded == reason, "Rejection reason must indicate the promise was discarded")
     }
+    
+    func testSimpleDiscardBlock() {
+        var blockCalled = false
+        let promise = Promise<Int>(discard: {
+            blockCalled = true
+        })
+        
+        promise.discard()
+        XCTAssert(blockCalled, "Discard must call the discard block")
+    }
 }
