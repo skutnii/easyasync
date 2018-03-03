@@ -1,4 +1,4 @@
-# easyswift
+# easyasync
 
 This is a library of some useful Swift code I wrote initially in the context of a test task for a job interview. In the process, i developed a couple of interesting solutions to common programming problems. The code works for both iOS and OS X.
 

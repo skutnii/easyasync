@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  s.name         = "EasySwift"
+  s.name         = "EasyAsync"
   s.version      = "0.1.0"
   s.summary      = "Some useful Swift code for asynchronous web tasks mainly"
 
@@ -39,7 +39,7 @@ Features in 0.1.0:
 
 DESC
 
-  s.homepage     = "https://github.com/skutnii/easyswift"
+  s.homepage     = "https://github.com/skutnii/easyasync"
   # s.screenshots  = "www.example.com/screenshots_1.gif", "www.example.com/screenshots_2.gif"
 
 
@@ -93,7 +93,7 @@ DESC
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/skutnii/easyswift.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/skutnii/easysasync.git", :tag => "#{s.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
