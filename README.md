@@ -1,15 +1,16 @@
 # easyswift
 
-This is a library of some useful Swift code I wrote initially in the context of a test task for a job interview. In the process, i developed a couple of interesting solutions to common iOS programming problems.
+This is a library of some useful Swift code I wrote initially in the context of a test task for a job interview. In the process, i developed a couple of interesting solutions to common programming problems. The code works for both iOS and OS X.
 
 Then I have extracted the things that I feel make life a lot easier into this package.
 
 Current version is, 0.1.0.
 
 Features in 0.1.0:
-+ Promises thoroughly documented (see the specification at doc/Promise.md) and unit tested.
-+ Fetch undocumented but useful.
-+ JSQ in its embryonic state.
++ promises thoroughly documented (see the specification at doc/Promise.md) and unit tested;
++ Fetch undocumented but useful;
++ JSQ in its embryonic state;
++ Observable somewhat usable.
 
 ## Usage tips
 

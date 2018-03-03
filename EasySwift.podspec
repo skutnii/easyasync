@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   s.description  = <<-DESC
-This is a library of some useful Swift code I wrote initially in the context of a test task for a job interview. In the process, i developed a couple of interesting solutions to common iOS programming problems.
+This is a library of some useful Swift code I wrote initially in the context of a test task for a job interview. In the process, i developed a couple of interesting solutions to common programming problems.
 
 Then I have extracted the things that I feel make life a lot easier into this package.
 
@@ -35,7 +35,7 @@ Features in 0.1.0:
 + Promises thoroughly documented (see the specification at doc/Promise.md) and unit tested.
 + Fetch undocumented but useful.
 + JSQ in its embryonic state.
-+ WebImage and Observable somewhat usable.
++ Observable somewhat usable.
 
 DESC
 
@@ -83,6 +83,8 @@ DESC
   # s.osx.deployment_target = "10.7"
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"
+
+  s.swift_version = "4.0"
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
