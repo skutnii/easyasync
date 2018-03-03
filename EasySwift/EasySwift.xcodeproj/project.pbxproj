@@ -11,7 +11,6 @@
 		220CE539203F1CE7000EB022 /* PromiseOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220CE538203F1CE7000EB022 /* PromiseOperatorTests.swift */; };
 		2277F2F7201E056A00100502 /* EasySwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 2277F2E9201E056A00100502 /* EasySwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2277F305201E060E00100502 /* JSQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F301201E060E00100502 /* JSQ.swift */; };
-		2277F306201E060E00100502 /* WebImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F302201E060E00100502 /* WebImage.swift */; };
 		2277F307201E060E00100502 /* Observers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F303201E060E00100502 /* Observers.swift */; };
 		2277F308201E060E00100502 /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F304201E060E00100502 /* Promise.swift */; };
 		2277F30A201E069B00100502 /* Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2277F309201E069B00100502 /* Fetch.swift */; };
@@ -42,7 +41,6 @@
 		2277F2EF201E056A00100502 /* EasySwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EasySwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2277F2F6201E056A00100502 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2277F301201E060E00100502 /* JSQ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSQ.swift; sourceTree = "<group>"; };
-		2277F302201E060E00100502 /* WebImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebImage.swift; sourceTree = "<group>"; };
 		2277F303201E060E00100502 /* Observers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observers.swift; sourceTree = "<group>"; };
 		2277F304201E060E00100502 /* Promise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		2277F309201E069B00100502 /* Fetch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fetch.swift; sourceTree = "<group>"; };
@@ -127,7 +125,6 @@
 			children = (
 				2277F309201E069B00100502 /* Fetch.swift */,
 				2277F301201E060E00100502 /* JSQ.swift */,
-				2277F302201E060E00100502 /* WebImage.swift */,
 				2277F303201E060E00100502 /* Observers.swift */,
 				2277F304201E060E00100502 /* Promise.swift */,
 			);
@@ -256,7 +253,6 @@
 			files = (
 				2277F30A201E069B00100502 /* Fetch.swift in Sources */,
 				2277F307201E060E00100502 /* Observers.swift in Sources */,
-				2277F306201E060E00100502 /* WebImage.swift in Sources */,
 				2277F305201E060E00100502 /* JSQ.swift in Sources */,
 				2277F308201E060E00100502 /* Promise.swift in Sources */,
 			);

@@ -10,7 +10,6 @@ Features in 0.1.0:
 + Promises thoroughly documented (see the specification at doc/Promise.md) and unit tested.
 + Fetch undocumented but useful.
 + JSQ in its embryonic state.
-+ WebImage and Observable somewhat usable.
 
 ## Usage tips
 
