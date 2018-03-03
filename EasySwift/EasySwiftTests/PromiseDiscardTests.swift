@@ -41,5 +41,33 @@ class PromiseDiscardTests: XCTestCase {
         promise.discard()
         XCTAssert(blockCalled, "Discard must call the discard block")
     }
+    
+    func testCannotDiscardFulfilledPromise() {
+        let promise = Promise<Int>(discard:{
+            XCTFail("The discard block must not be called")
+        })
+        
+        promise.resolve(1)
+        promise.discard()
+        
+        XCTAssert(.fulfilled == promise.state, "Promise must remain fulfilled")
+        XCTAssert(1 == promise.value, "Promise value must not change")
+    }
+    
+    func testCannotDiscardRejectedPromise() {
+        let promise = Promise<Int>(discard:{
+            XCTFail("The discard block must not be called")
+        })
+        
+        promise.reject("Error")
+        promise.discard()
+        
+        guard let error = promise.rejectReason as? String else {
+            XCTFail("Reject reason must be a string here")
+            return
+        }
+        
+        XCTAssert("Error" == error, "Error must be the one supplied when rejecting")
+    }
 
 }
