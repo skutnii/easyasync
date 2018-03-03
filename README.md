@@ -14,7 +14,7 @@ Features in 0.1.0:
 
 ## Usage tips
 
-This library is available as a CocoaPod named EasySwift. 
+This library is available as a CocoaPod named EasyAsync.
 
 ### Promise
 
