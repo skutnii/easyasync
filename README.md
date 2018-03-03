@@ -256,39 +256,45 @@ class MyClass {
 }
 ```
 
-So who keeps the promise for you? Let us look inside the `Fetch.request(_:)` implementation
+So who keeps the promise for you? Let is look inside `Fetch.request(_:)` implementation:
 ```Swift
 class Fetch {
     class func request(_ request: URLRequest) -> Promise<Data> {
-        return Promise {
-            resolve, reject in
+        let innerPromise = Promise<Data>()
+        let task = URLSession.shared.dataTask(with: request) {
+            data, response, error in
+            guard nil == error else {
+                innerPromise.reject(FetchError.connectionError)
+                return
+            }
 
-            URLSession.shared.dataTask(with: request) {
-                data, response, error in
-                guard nil == error else {
-                    reject(FetchError.connectionError)
-                    return
-                }
+            let code = (response as? HTTPURLResponse)?.statusCode ?? 400
+            guard code <= 400 else {
+                innerPromise.reject(FetchError.httpError(code))
+                return
+            }
 
-                let code = (response as? HTTPURLResponse)?.statusCode ?? 400
-                guard code <= 400 else {
-                    reject(FetchError.httpError(code))
-                    return
-                }
+            guard nil != data else {
+                innerPromise.reject(FetchError.noData)
+                return
+            }
 
-                guard nil != data else {
-                    reject(FetchError.noData)
-                    return
-                }
-
-                resolve(data!)
-            } .resume()
+            innerPromise.resolve(data!)
         }
+
+        let promise = Promise<Data>(discard: {
+            [weak task] in
+            task?.cancel()
+        })
+
+        promise.chain(after: innerPromise)
+        task.resume()
+
+        return promise
     }
 }
 ```
-The promise is constructed with the asynchronous initializer (see previous section). The initializer closure is scheduled on the main dispatch queue and the reference to the promise is implicitly held via `resolve` and `reject` parameters until the initializer is executed.
 
-When executed, the initializer block captures `resolve` and `reject` in the data task completion block which essentially transfers ownership of the promise to `URLSession`.
+Here `innerPromise` is captured by the `URLSessionTask` completion block. The returned promise is chained after `innerPromise`, i.e. when `innerPromise` is resolved/rejected, the chained promise will be resolved/rejected with the same value/reason (see doc/Promise.md 2.2). This also gives `innerPromise` ownership of the returned promise. Note the weak data task reference in the returned promise's discard block - it helps avoid a retain cycle.
 
-So in this case a promise is owned by `Fetch` implementation. If you are using promises in your own solution, you should follow the same pattern. When wrapping a callback-based API in promises, capture promises in callbacks.
+So in this case the entire promise chain is owned by `Fetch` implementation. If you are using promises in your own solution, you should follow the same pattern. When wrapping a callback-based API in promises, capture promises in callbacks.

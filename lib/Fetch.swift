@@ -19,27 +19,35 @@ public enum FetchError : Error {
 class Fetch {
     
     class func request(_ request: URLRequest) -> Promise<Data> {
-        let promise = Promise<Data>()
-        URLSession.shared.dataTask(with: request) {
+        let innerPromise = Promise<Data>()
+        let task = URLSession.shared.dataTask(with: request) {
             data, response, error in
             guard nil == error else {
-                promise.reject(FetchError.connectionError)
+                innerPromise.reject(FetchError.connectionError)
                 return
             }
             
             let code = (response as? HTTPURLResponse)?.statusCode ?? 400
             guard code <= 400 else {
-                promise.reject(FetchError.httpError(code))
+                innerPromise.reject(FetchError.httpError(code))
                 return
             }
             
             guard nil != data else {
-                promise.reject(FetchError.noData)
+                innerPromise.reject(FetchError.noData)
                 return
             }
             
-            promise.resolve(data!)
-        } .resume()
+            innerPromise.resolve(data!)
+        }
+        
+        let promise = Promise<Data>(discard: {
+            [weak task] in
+            task?.cancel()
+        })
+        
+        promise.chain(after: innerPromise)
+        task.resume()
         
         return promise
     }

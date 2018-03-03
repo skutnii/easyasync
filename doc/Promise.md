@@ -37,10 +37,15 @@ Let `promise1, promise2: Promise<T>`. Then, if `promise2` is chained after `prom
 
 ### 2.3 Rescue conditions
 + 2.3.1 A valid rescue handler is a closure receiving a single argument of any type
-+ 2.3.2 A value `x` is said to meet the rescue condition for a valid rescue handler `R`, if
++ 2.3.2 A value `x` is said to meet the rescue condition for a valid rescue handler receiving an argument of type `R`, if
     ```Swift
     (x is R) == true
     ```
+
+### 2.4 Discarding a promise
+A pending promise can be discarded. When a promise is discarded,
++ 2.4.1 promise value computations should be cancelled;
++ 2.4.2 the promise is rejected with a reason indicating that it was discarded.
 
 ## 3 `Promise<T>`
 
@@ -139,11 +144,13 @@ Takes no parameters, creates a pending promise.
 
 #### 3.3.2 Asynchronous block initializer
 ```Swift
-init(_ block: @escaping (_ resolve: @escaping (T) -> (), _reject: @escaping (Any?) -> ()) -> ())
+init(_ block: @escaping (_ resolve: @escaping (T) -> (),
+    _ reject: @escaping (Any?) -> ()) -> ())
 ```
 Let `T` be some type,
 ```Swift
-let myBlock: @escaping (_ resolve: @escaping (T) -> (), _reject: @escaping (Any?) -> ()) -> ()
+let myBlock: (_ resolve: @escaping (T) -> (),
+                _ reject: @escaping (Any?) -> ()) -> ()) -> ()
 let promise = Promise<T>(myBlock)
 ```
 + 3.3.2.1 The `promise` must be created in pending state.
@@ -152,6 +159,12 @@ let promise = Promise<T>(myBlock)
 + 3.3.3.3 In the `myBlock` scope,
     + 3.3.3.3.1 a call to `resolve` with `x` as an argument must resolve `promise` with value `x`;
     + 3.3.3.3.2 a call to `reject` with  `r` as an argument must reject `promise` with reason `r`.
+    
+#### 3.3.3 Discarding initializer
+```Swift
+init(discard block: @escaping () -> ())
+```
+Initializes the promise with a discard block [2.4]. The code that cancels promise value computation should be put in the block parameter.
 
 ### 3.4 Resolution
 
@@ -168,3 +181,13 @@ func reject(_ reason: Any?)
 ```
 + 3.4.2.1 If the callee is pending, rejects it with `reason`.
 + 3.4.2.2 Does nothing otherwise.
+
+### 3.5 Discarding
+```Swift
+func discard()
+```
+
++ 3.5.1 if the promise is pending, calls the discard block if it was provided during initialization and rejects the promise with a reason indicating that the promise was discarded;
++ 3.5.2 does nothing otherwise.
+
+
