@@ -221,6 +221,10 @@ public class Promise<T>  {
     }
     
     public func discard() {
+        guard .pending == state else {
+            return
+        }
+        
         self.reject(Rejection.discarded)
         _discard?()
     }
