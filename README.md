@@ -4,11 +4,11 @@ This is a library of some useful Swift code I wrote initially in the context of 
 
 Then I have extracted the things that I feel make life a lot easier into this package.
 
-Current version is, 0.2.0.
+Current version is 0.2.0.
 
 Features
 
-See Changelog.md
+See CHANGELOG.md
 
 ## Usage tips
 

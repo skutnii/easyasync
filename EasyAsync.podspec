@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "EasyAsync"
-  s.version      = "0.1.0"
+  s.version      = "0.2.0"
   s.summary      = "Some useful Swift code for asynchronous web tasks mainly"
 
   # This description is used to generate tags and improve search results.
@@ -29,13 +29,9 @@ This is a library of some useful Swift code I wrote initially in the context of 
 
 Then I have extracted the things that I feel make life a lot easier into this package.
 
-Current version in development is 0.1.0.
+Current version is 0.2.0.
 
-Features in 0.1.0:
-+ Promises thoroughly documented (see the specification at doc/Promise.md) and unit tested.
-+ Fetch undocumented but useful.
-+ JSQ in its embryonic state.
-+ Observable somewhat usable.
+See CHANGELOG.md for features
 
 DESC
 
