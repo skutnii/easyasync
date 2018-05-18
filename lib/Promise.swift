@@ -148,6 +148,60 @@ public class Promise<ValueType>  {
         }
     }
     
+    /// Add a handler block to be executed anyway, whether the callee is resolved or rejected
+    ///
+    /// - Parameter handler: the handler
+    /// - Returns: a promise to be resolved with the handler's return value
+    public func anyway<OutType>(_ handler: @escaping (ValueType?) throws -> OutType) -> Promise<OutType> {
+        let resultPromise = Promise<OutType>()
+        
+        let wrappedHandler = {
+            (result: ValueType?) in
+            do {
+                resultPromise.resolve(try handler(result))
+            } catch {
+                resultPromise.reject(error)
+            }
+        }
+        
+        then({
+            result in
+            wrappedHandler(result)
+        }, {
+            _ in
+            wrappedHandler(nil)
+        })
+        
+        return resultPromise
+    }
+
+    /// Add an asynchronous handler block to be executed anyway, whether the callee is resolved or rejected
+    ///
+    /// - Parameter handler: the handler
+    /// - Returns: a promise to be chained after with the handler's return value
+    public func anyway<OutType>(async handler: @escaping (ValueType?) throws -> Promise<OutType>) -> Promise<OutType> {
+        let resultPromise = Promise<OutType>()
+        
+        let wrappedHandler = {
+            (result: ValueType?) in
+            do {
+                resultPromise.chain(after: try handler(result))
+            } catch {
+                resultPromise.reject(error)
+            }
+        }
+        
+        then({
+            result in
+            wrappedHandler(result)
+        }, {
+            _ in
+            wrappedHandler(nil)
+        })
+        
+        return resultPromise
+    }
+    
     /// Add an asynchronous fulfilment handler (i.e. handler returning a promise).
     ///
     /// - Parameter onSuccess: the handler
