@@ -4,13 +4,11 @@ This is a library of some useful Swift code I wrote initially in the context of 
 
 Then I have extracted the things that I feel make life a lot easier into this package.
 
-Current version is, 0.1.0.
+Current version is, 0.2.0.
 
-Features in 0.1.0:
-+ promises thoroughly documented (see the specification at doc/Promise.md) and unit tested;
-+ Fetch undocumented but useful;
-+ JSQ in its embryonic state;
-+ Observable somewhat usable.
+Features
+
+See Changelog.md
 
 ## Usage tips
 

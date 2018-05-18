@@ -35,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		14836FA720AEE0C00042F253 /* PromiseAnywayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseAnywayTests.swift; sourceTree = "<group>"; };
+		14836FA920AEE4B90042F253 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		220CE536203F179D000EB022 /* PromiseConvenienceMethodsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseConvenienceMethodsTests.swift; sourceTree = "<group>"; };
 		220CE538203F1CE7000EB022 /* PromiseOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseOperatorTests.swift; sourceTree = "<group>"; };
 		2277F2E6201E056A00100502 /* EasySwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EasySwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,6 +79,7 @@
 		2277F2DC201E056A00100502 = {
 			isa = PBXGroup;
 			children = (
+				14836FA920AEE4B90042F253 /* CHANGELOG.md */,
 				22892970204ABC030097865E /* LICENSE */,
 				2289296F204ABB9D0097865E /* EasyAsync.podspec */,
 				22C18011202BA92500489B36 /* README.md */,
