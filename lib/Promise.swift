@@ -20,15 +20,7 @@ public class Promise<ValueType>  {
     }
     
     //Thread safety
-    private var _lock = NSObject()
-    func synchronized(_ block: () -> ()) {
-        objc_sync_enter(_lock)
-        defer {
-            objc_sync_exit(_lock)
-        }
-        
-        block()
-    }
+    private var _lock = Synchronizer()
     
     /// Promise state
     private var _state: State = .pending
@@ -73,7 +65,7 @@ public class Promise<ValueType>  {
     private var rejectCallbacks = [(Any?) -> ()]()
     
     public func resolve(_ value: ValueType) {
-        synchronized {
+        _lock.synchronized {
             guard state == .pending else {
                 return
             }
@@ -84,7 +76,7 @@ public class Promise<ValueType>  {
     }
     
     public func reject(_ reason: Any?) {
-        synchronized {
+        _lock.synchronized {
             guard state == .pending else {
                 return
             }
@@ -98,7 +90,7 @@ public class Promise<ValueType>  {
     ///
     /// - Parameter promise: the promise to chin after
     public func chain(after promise: Promise<ValueType>) {
-        synchronized {
+        _lock.synchronized {
             guard state == .pending else {
                 return
             }
@@ -119,7 +111,7 @@ public class Promise<ValueType>  {
     ///   - onSuccess: success handler to be executed when the promise is fulfilled
     ///   - onFailure: reject handler to be executed when the promise is rejected
     public func then(_ onSuccess: ((ValueType) throws -> ())?, _ onFailure: ((Any?) -> ())? = nil) {
-        synchronized {
+        _lock.synchronized {
             guard .rejected != state else {
                 onFailure?(self.rejectReason)
                 return
@@ -206,8 +198,8 @@ public class Promise<ValueType>  {
     ///
     /// - Parameter onSuccess: the handler
     /// - Returns: a promise. When the callee gets fulfilled, `onSuccess` is fired and `then` return value is chained after the one of the handlers
-    public func then<O>(async onSuccess: @escaping (ValueType) throws -> Promise<O>) -> Promise<O> {
-        let next = Promise<O>()
+    public func then<OutType>(async onSuccess: @escaping (ValueType) throws -> Promise<OutType>) -> Promise<OutType> {
+        let next = Promise<OutType>()
         self.then({
             (value: ValueType) -> () in
             let deferred = try onSuccess(value)
@@ -224,8 +216,8 @@ public class Promise<ValueType>  {
     ///
     /// - Parameter onSuccess: the handler to be fired when the callee is fulfilled
     /// - Returns: a promise that will be resolved with the handler's return value
-    public func then<O>(_ onSuccess: @escaping (ValueType) throws -> O) -> Promise<O> {
-        let next = Promise<O>()
+    public func then<OutType>(_ onSuccess: @escaping (ValueType) throws -> OutType) -> Promise<OutType> {
+        let next = Promise<OutType>()
         self.then({
             (value: ValueType) -> () in
             let nextValue = try onSuccess(value)
@@ -328,12 +320,14 @@ public class Promise<ValueType>  {
     
     /// Discard the promise
     public func discard() {
-        guard .pending == state else {
-            return
+        _lock.synchronized {
+            guard .pending == state else {
+                return
+            }
+            
+            self.reject(Rejection.discarded)
+            _discard?()
         }
-        
-        self.reject(Rejection.discarded)
-        _discard?()
     }
     
     /// Convenience method for creating a resolved promise

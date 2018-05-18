@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		14836FA820AEE0C00042F253 /* PromiseAnywayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14836FA720AEE0C00042F253 /* PromiseAnywayTests.swift */; };
+		1492331620AF71AE004BB146 /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1492331520AF71AE004BB146 /* Mutex.swift */; };
+		1492332220AF7F74004BB146 /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1492331520AF71AE004BB146 /* Mutex.swift */; };
 		220CE537203F179D000EB022 /* PromiseConvenienceMethodsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220CE536203F179D000EB022 /* PromiseConvenienceMethodsTests.swift */; };
 		220CE539203F1CE7000EB022 /* PromiseOperatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 220CE538203F1CE7000EB022 /* PromiseOperatorTests.swift */; };
 		2277F2F7201E056A00100502 /* EasySwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 2277F2E9201E056A00100502 /* EasySwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -36,6 +38,7 @@
 /* Begin PBXFileReference section */
 		14836FA720AEE0C00042F253 /* PromiseAnywayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseAnywayTests.swift; sourceTree = "<group>"; };
 		14836FAA20AEE6860042F253 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = CHANGELOG.md; path = ../CHANGELOG.md; sourceTree = "<group>"; };
+		1492331520AF71AE004BB146 /* Mutex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mutex.swift; sourceTree = "<group>"; };
 		220CE536203F179D000EB022 /* PromiseConvenienceMethodsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseConvenienceMethodsTests.swift; sourceTree = "<group>"; };
 		220CE538203F1CE7000EB022 /* PromiseOperatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromiseOperatorTests.swift; sourceTree = "<group>"; };
 		2277F2E6201E056A00100502 /* EasySwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EasySwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +135,7 @@
 				2277F301201E060E00100502 /* JSQ.swift */,
 				2277F303201E060E00100502 /* Observers.swift */,
 				2277F304201E060E00100502 /* Promise.swift */,
+				1492331520AF71AE004BB146 /* Mutex.swift */,
 			);
 			name = lib;
 			path = ../lib;
@@ -208,6 +212,7 @@
 				TargetAttributes = {
 					2277F2E5201E056A00100502 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0930;
 						ProvisioningStyle = Automatic;
 					};
 					2277F2EE201E056A00100502 = {
@@ -256,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1492331620AF71AE004BB146 /* Mutex.swift in Sources */,
 				2277F30A201E069B00100502 /* Fetch.swift in Sources */,
 				2277F307201E060E00100502 /* Observers.swift in Sources */,
 				2277F305201E060E00100502 /* JSQ.swift in Sources */,
@@ -267,6 +273,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1492332220AF7F74004BB146 /* Mutex.swift in Sources */,
 				2289296E2049D2FA0097865E /* PromiseDiscardTests.swift in Sources */,
 				22E675B12039B942008EB6F5 /* PromiseStateTests.swift in Sources */,
 				22E675B72039E03A008EB6F5 /* PromiseRescueTests.swift in Sources */,
@@ -410,6 +417,7 @@
 		2277F2FB201E056A00100502 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -422,6 +430,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.skutnii.EasySwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -430,6 +439,7 @@
 		2277F2FC201E056A00100502 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
