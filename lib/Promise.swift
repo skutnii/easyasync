@@ -11,7 +11,7 @@ import Foundation
 infix operator &&&: MultiplicationPrecedence
 infix operator |||: AdditionPrecedence
 
-public class Promise<T>  {
+public class Promise<ValueType>  {
     
     public enum State {
         case pending
@@ -19,6 +19,18 @@ public class Promise<T>  {
         case rejected
     }
     
+    //Thread safety
+    private var _lock = NSObject()
+    func synchronized(_ block: () -> ()) {
+        objc_sync_enter(_lock)
+        defer {
+            objc_sync_exit(_lock)
+        }
+        
+        block()
+    }
+    
+    /// Promise state
     private var _state: State = .pending
     public private(set) var state: State  {
         get {
@@ -55,75 +67,95 @@ public class Promise<T>  {
     }
     
     public private(set) var rejectReason: Any?
-    public private(set) var value: T?
+    public private(set) var value: ValueType?
     
-    private var fulfillCallbacks = [(T) -> ()]()
+    private var fulfillCallbacks = [(ValueType) -> ()]()
     private var rejectCallbacks = [(Any?) -> ()]()
     
-    public func resolve(_ value: T) {
-        guard state == .pending else {
-            return
+    public func resolve(_ value: ValueType) {
+        synchronized {
+            guard state == .pending else {
+                return
+            }
+            
+            self.value = value
+            state = .fulfilled
         }
-        
-        self.value = value
-        state = .fulfilled
     }
     
     public func reject(_ reason: Any?) {
-        guard state == .pending else {
-            return
+        synchronized {
+            guard state == .pending else {
+                return
+            }
+            
+            rejectReason = reason
+            state = .rejected
         }
-        
-        rejectReason = reason
-        state = .rejected
     }
     
-    public func chain(after promise: Promise<T>) {
-        guard state == .pending else {
-            return
+    /// Chain the promise after another, so that it will get resolved/rejected when the argument is resolved/rejected
+    ///
+    /// - Parameter promise: the promise to chin after
+    public func chain(after promise: Promise<ValueType>) {
+        synchronized {
+            guard state == .pending else {
+                return
+            }
+            
+            promise.then({
+                value in
+                self.resolve(value)
+            }, {
+                reason in
+                self.reject(reason)
+            })
         }
-        
-        promise.then({
-            value in
-            self.resolve(value)
-        }, {
-            reason in
-            self.reject(reason)
-        })
     }
     
-    public func then(_ onSuccess: ((T) throws -> ())?, _ onFailure: ((Any?) -> ())? = nil) {
-        guard .rejected != state else {
-            onFailure?(self.rejectReason)
-            return
-        }
-        
-        let callback = {
-            (value: T) -> () in
-            do {
-                try onSuccess?(value)
-            } catch {
-                onFailure?(error)
+    /// Basic `then` method that adds success/error handlers. The handlers are stored by the promise to be executed upon resolve/reject
+    ///
+    /// - Parameters:
+    ///   - onSuccess: success handler to be executed when the promise is fulfilled
+    ///   - onFailure: reject handler to be executed when the promise is rejected
+    public func then(_ onSuccess: ((ValueType) throws -> ())?, _ onFailure: ((Any?) -> ())? = nil) {
+        synchronized {
+            guard .rejected != state else {
+                onFailure?(self.rejectReason)
+                return
+            }
+            
+            let callback = {
+                (value: ValueType) -> () in
+                do {
+                    try onSuccess?(value)
+                } catch {
+                    onFailure?(error)
+                }
+            }
+            
+            guard .fulfilled != state else {
+                callback(value!)
+                return
+            }
+            
+            fulfillCallbacks.append(callback)
+            
+            rejectCallbacks.append {
+                reason in
+                onFailure?(reason)
             }
         }
-        
-        guard .fulfilled != state else {
-            callback(value!)
-            return
-        }
-        
-        fulfillCallbacks.append(callback)
-        
-        rejectCallbacks.append {
-            reason in
-            onFailure?(reason)
-        }
     }
     
-    public func then<O>(async onSuccess: @escaping (T) throws -> Promise<O>) -> Promise<O> {
+    /// Add an asynchronous fulfilment handler (i.e. handler returning a promise).
+    ///
+    /// - Parameter onSuccess: the handler
+    /// - Returns: a promise. When the callee gets fulfilled, `onSuccess` is fired and `then` return value is chained after the one of the handlers
+    public func then<O>(async onSuccess: @escaping (ValueType) throws -> Promise<O>) -> Promise<O> {
         let next = Promise<O>()
         self.then({
-            (value: T) -> () in
+            (value: ValueType) -> () in
             let deferred = try onSuccess(value)
             next.chain(after: deferred)
         }, {
@@ -134,10 +166,14 @@ public class Promise<T>  {
         return next
     }
     
-    public func then<O>(_ onSuccess: @escaping (T) throws -> O) -> Promise<O> {
+    /// Add a synchronous fulfilment handler
+    ///
+    /// - Parameter onSuccess: the handler to be fired when the callee is fulfilled
+    /// - Returns: a promise that will be resolved with the handler's return value
+    public func then<O>(_ onSuccess: @escaping (ValueType) throws -> O) -> Promise<O> {
         let next = Promise<O>()
         self.then({
-            (value: T) -> () in
+            (value: ValueType) -> () in
             let nextValue = try onSuccess(value)
             next.resolve(nextValue)
         }, {
@@ -148,28 +184,35 @@ public class Promise<T>  {
         return next
     }
     
-    public func rescue<E>(_ onError: @escaping (E) -> ()) {
+    /// Basic rescue method. Add a rejection handler.
+    ///
+    /// - Parameter onError: handler to be executed when the callee is rejected with the reason of `ErrorType`
+    public func rescue<ErrorType>(_ onError: @escaping (ErrorType) -> ()) {
         self.then(nil, {
             reason in
-            guard reason is E else {
+            guard reason is ErrorType else {
                 return
             }
             
-            onError(reason as! E)
+            onError(reason as! ErrorType)
         })
     }
     
-    public func rescue<E, O>(_ onError: @escaping (E) throws -> O) -> Promise<O> {
-        let next = Promise<O>()
+    /// Add an `OutType`-returning rejection handler
+    ///
+    /// - Parameter onError: the handler to be executed when the callee is rejected with the reason of `ErrorType`
+    /// - Returns: a promise, that will be fulfilled with the handler's return value if the handler is fired
+    public func rescue<ErrorType, OutType>(_ onError: @escaping (ErrorType) throws -> OutType) -> Promise<OutType> {
+        let next = Promise<OutType>()
         self.then(nil, {
             reason in
-            guard reason is E else {
+            guard reason is ErrorType else {
                 next.reject(reason)
                 return
             }
             
             do {
-                let value = try onError(reason as! E)
+                let value = try onError(reason as! ErrorType)
                 next.resolve(value)
             } catch {
                 next.reject(error)
@@ -179,17 +222,21 @@ public class Promise<T>  {
         return next
     }
     
-    public func rescue<E, O>(async onError: @escaping (E) throws -> Promise<O>) -> Promise<O> {
-        let next = Promise<O>()
+    /// Add an asynchronous `Promise<OutType>`-returning rejection handler
+    ///
+    /// - Parameter onError: the handler to be executed when the callee is rejected with the reason of `ErrorType`
+    /// - Returns: a promise, that will be chained after the handler's return value if the handler is fired
+    public func rescue<ErrorType, OutType>(async onError: @escaping (ErrorType) throws -> Promise<OutType>) -> Promise<OutType> {
+        let next = Promise<OutType>()
         self.then(nil, {
             reason in
-            guard reason is E else {
+            guard reason is ErrorType else {
                 next.reject(reason)
                 return
             }
             
             do {
-                let deferred = try onError(reason as! E)
+                let deferred = try onError(reason as! ErrorType)
                 next.chain(after: deferred)
             } catch {
                 next.reject(error)
@@ -202,7 +249,8 @@ public class Promise<T>  {
     public typealias Discarder = () -> ()
     private var _discard: Discarder?
     
-    public typealias Initializer = (@escaping (T) -> (), @escaping (Any?) -> ()) -> ()
+    ///Convenience asynchronous initializer
+    public typealias Initializer = (@escaping (ValueType) -> (), @escaping (Any?) -> ()) -> ()
     public convenience init(_ initializer: @escaping Initializer) {
         self.init()
         
@@ -211,6 +259,10 @@ public class Promise<T>  {
         }
     }
     
+    /// Initialize the promise with a discard block
+    ///
+    /// - Parameter block: the block that will be called when the promise is discarded (see `discard()`).
+    /// The block is supposed to cancel the underlying asynchronous operations
     public convenience init(discard block: @escaping Discarder) {
         self.init()
         _discard = block
@@ -220,6 +272,7 @@ public class Promise<T>  {
         case discarded
     }
     
+    /// Discard the promise
     public func discard() {
         guard .pending == state else {
             return
@@ -229,20 +282,34 @@ public class Promise<T>  {
         _discard?()
     }
     
-    public class func resolve(_ value: T) -> Promise<T> {
-        let promise = Promise<T>()
+    /// Convenience method for creating a resolved promise
+    ///
+    /// - Parameter value: value to resolve the promise with.
+    /// - Returns: a promise resolved with `value`
+    public class func resolve(_ value: ValueType) -> Promise<ValueType> {
+        let promise = Promise<ValueType>()
         promise.resolve(value)
         return promise
     }
     
-    public class func reject(_ reason: Any?) -> Promise<T> {
-        let promise = Promise<T>()
+    /// Convenience method for creating a rejected promise
+    ///
+    /// - Parameter reason: reason to reject the promise with.
+    /// - Returns: a promise rejected with `reson`
+    public class func reject(_ reason: Any?) -> Promise<ValueType> {
+        let promise = Promise<ValueType>()
         promise.reject(reason)
         return promise
     }
     
-    public static func &&&<V>(left: Promise<T>, right: V) -> Promise<(T, V)> {
-        let promise = Promise<(T, V)>()
+    /// "Promise and a value" operator
+    ///
+    /// - Parameters:
+    ///   - left: a promise
+    ///   - right: a value
+    /// - Returns: a promise to be fulfilled with (left.value!, value) tuple upon `left` fulfilment
+    public static func &&&<OtherValueType>(left: Promise<ValueType>, right: OtherValueType) -> Promise<(ValueType, OtherValueType)> {
+        let promise = Promise<(ValueType, OtherValueType)>()
         left.then({
             value in
             promise.resolve((value, right))
@@ -254,8 +321,14 @@ public class Promise<T>  {
         return promise
     }
 
-    public static func &&&<V>(left: V, right: Promise<T>) -> Promise<(V, T)> {
-        let promise = Promise<(V, T)>()
+    /// "Value and a promise" operator
+    ///
+    /// - Parameters:
+    ///   - left: a value
+    ///   - right: a promise
+    /// - Returns: a promise to be resolved with (value, right.value!) tuple upon `right` resolution
+    public static func &&&<OtherValueType>(left: OtherValueType, right: Promise<ValueType>) -> Promise<(OtherValueType, ValueType)> {
+        let promise = Promise<(OtherValueType, ValueType)>()
         right.then({
             value in
             promise.resolve((left, value))
@@ -269,9 +342,15 @@ public class Promise<T>  {
 
 }
 
-public func &&&<V1, V2>(left: Promise<V1>, right: Promise<V2>) -> Promise<(V1, V2)> {
-    let promise = Promise<(V1, V2)>()
-    var values: (V1?, V2?) = (nil, nil)
+/// Promise "and" operator
+///
+/// - Parameters:
+///   - left:  a promise
+///   - right: another promise
+/// - Returns: a promise that will be fulfilled with `(left.value!, right.value!)` tuple when both are fulfilled.
+public func &&&<Value1, Value2>(left: Promise<Value1>, right: Promise<Value2>) -> Promise<(Value1, Value2)> {
+    let promise = Promise<(Value1, Value2)>()
+    var values: (Value1?, Value2?) = (nil, nil)
     var counter = 0
     func incrementCounter() {
         counter += 1
@@ -302,7 +381,13 @@ public func &&&<V1, V2>(left: Promise<V1>, right: Promise<V2>) -> Promise<(V1, V
     return promise
 }
 
-public func |||<V1, V2>(left: Promise<V1>, right: Promise<V2>) -> Promise<Any> {
+/// Promise "or" operator
+///
+/// - Parameters:
+///   - left:  a promise
+///   - right: another promise
+/// - Returns: a promise that will be fulfilled with value of the first promise to fulfill.
+public func |||<Value1, Value2>(left: Promise<Value1>, right: Promise<Value2>) -> Promise<Any> {
     let promise = Promise<Any>()
     var errors: (Any?, Any?) = (nil, nil)
     var counter = 0
