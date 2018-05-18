@@ -1,7 +1,10 @@
 #  EasyAsync Changelog
 
-Current version is 0.2.0
+Current version is 0.2.1
 
+Features in 0.2.1:
++ Better thread synchronization fetures based on POSIX mutexes
+\
 Features in 0.2.0:
 + Thread safety in promises
 + promise `anyway` methods
